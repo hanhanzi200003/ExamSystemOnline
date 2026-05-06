@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员后台 - 考试系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            color: var(--primary-color);
+        }
+
+        .sidebar-header p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .nav-menu {
+            padding: 10px 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .nav-item:hover {
+            background: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%);
+            color: var(--primary-color);
+            border-right: 3px solid var(--primary-color);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-right: 12px;
+        }
+
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h2 {
+            font-size: 24px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            background: var(--danger-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3 {
+            font-size: 18px;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar input, .search-bar select {
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .search-bar input:focus, .search-bar select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-color);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-blue { background: #dbeafe; color: #1d4ed8; }
+        .badge-green { background: #dcfce7; color: #16a34a; }
+        .badge-orange { background: #fef3c7; color: #d97706; }
+        .badge-red { background: #fee2e2; color: #dc2626; }
+        .badge-purple { background: #f3e8ff; color: #9333ea; }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination span {
+            color: var(--text-secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 18px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--primary-color);
+        }
+
+        .modal-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 60px;
+                padding: 10px 0;
+            }
+
+            .sidebar-header h1, .sidebar-header p, .nav-item span {
+                display: none;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 15px;
+            }
+
+            .nav-item i {
+                margin-right: 0;
+            }
+
+            .main-content {
+                margin-left: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1><i class="ri-admin-line"></i> 管理后台</h1>
+            <p>考试系统管理中心</p>
+        </div>
+        <nav class="nav-menu">
+            <div class="nav-item active" data-page="dashboard">
+                <i class="ri-dashboard-line"></i>
+                <span>数据概览</span>
+            </div>
+            <div class="nav-item" data-page="users">
+                <i class="ri-user-settings-line"></i>
+                <span>用户管理</span>
+            </div>
+            <div class="nav-item" data-page="groups">
+                <i class="ri-team-line"></i>
+                <span>组管理</span>
+            </div>
+            <div class="nav-item" data-page="exams">
+                <i class="ri-file-list-3-line"></i>
+                <span>考试管理</span>
+            </div>
+            <div class="nav-item" data-page="papers">
+                <i class="ri-file-text-line"></i>
+                <span>试卷管理</span>
+            </div>
+            <div class="nav-item" data-page="questions">
+                <i class="ri-question-line"></i>
+                <span>题目管理</span>
+            </div>
+            <div class="nav-item" data-page="scores">
+                <i class="ri-bar-chart-box-line"></i>
+                <span>成绩管理</span>
+            </div>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="header">
+            <h2 id="pageTitle">数据概览</h2>
+            <div class="user-info">
+                <span id="adminName">管理员</span>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="ri-logout-box-line"></i> 退出登录
+                </button>
+            </div>
+        </div>
+
+        <!-- 数据概览页面 -->
+        <div id="dashboard" class="page-section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>总用户数</h3>
+                    <div class="value" id="statUsers">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>教师数量</h3>
+                    <div class="value" id="statTeachers">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>学生数量</h3>
+                    <div class="value" id="statStudents">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>考试组数</h3>
+                    <div class="value" id="statGroups">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>考试数量</h3>
+                    <div class="value" id="statExams">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>试卷数量</h3>
+                    <div class="value" id="statPapers">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>题目数量</h3>
+                    <div class="value" id="statQuestions">0</div>
+                </div>
+                <div class="stat-card">
+                    <h3>成绩记录</h3>
+                    <div class="value" id="statScores">0</div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top: 24px;">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3>教师注册码</h3>
+                    <button class="btn btn-primary" onclick="refreshTeacherCode()" style="padding: 8px 16px;">
+                        <i class="ri-refresh-line"></i> 刷新注册码
+                    </button>
+                </div>
+                <div class="card-body" style="text-align: center; padding: 40px;">
+                    <div style="font-size: 48px; font-weight: bold; letter-spacing: 16px; color: #3b82f6; font-family: 'Courier New', monospace;" id="teacherRegisterCode">------</div>
+                    <p style="color: #666; margin-top: 16px;">教师注册时需要输入此6位数字验证码</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户管理页面 -->
+        <div id="users" class="page-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3>用户列表</h3>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar">
+                        <select id="userRoleFilter">
+                            <option value="">全部角色</option>
+                            <option value="TEACHER">教师</option>
+                            <option value="STUDENT">学生</option>
+                        </select>
+                        <input type="text" id="userKeyword" placeholder="搜索用户名/昵称/邮箱...">
+                        <button class="btn btn-primary" onclick="loadUsers()">搜索</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>用户名</th>
+                                <th>昵称</th>
+                                <th>邮箱</th>
+                                <th>角色</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable"></tbody>
+                    </table>
+                    <div class="pagination" id="usersPagination"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 组管理页面 -->
+        <div id="groups" class="page-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3>组列表</h3>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar">
+                        <input type="text" id="groupKeyword" placeholder="搜索组名称...">
+                        <button class="btn btn-primary" onclick="loadGroups()">搜索</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>组名称</th>
+                                <th>教师</th>
+                                <th>成员数</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="groupsTable"></tbody>
+                    </table>
+                    <div class="pagination" id="groupsPagination"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 考试管理页面 -->
+        <div id="exams" class="page-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3>考试列表</h3>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar">
+                        <input type="text" id="examKeyword" placeholder="搜索考试名称...">
+                        <button class="btn btn-primary" onclick="loadExams()">搜索</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>考试名称</th>
+                                <th>教师</th>
+                                <th>试卷</th>
+                                <th>组</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="examsTable"></tbody>
+                    </table>
+                    <div class="pagination" id="examsPagination"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 试卷管理页面 -->
+        <div id="papers" class="page-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3>试卷列表</h3>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar">
+                        <input type="text" id="paperKeyword" placeholder="搜索试卷名称...">
+                        <button class="btn btn-primary" onclick="loadPapers()">搜索</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>试卷名称</th>
+                                <th>教师</th>
+                                <th>题目数</th>
+                                <th>总分</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="papersTable"></tbody>
+                    </table>
+                    <div class="pagination" id="papersPagination"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 题目管理页面 -->
+        <div id="questions" class="page-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3>题目列表</h3>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar">
+                        <input type="text" id="questionKeyword" placeholder="搜索题目内容...">
+                        <button class="btn btn-primary" onclick="loadQuestions()">搜索</button>
+                        <button class="btn btn-danger" id="batchDeleteQuestionsBtn" onclick="toggleQuestionBatchDeleteMode()">批量删除</button>
+                        <button class="btn btn-warning" id="confirmDeleteQuestionsBtn" onclick="confirmBatchDeleteQuestions()" style="display:none;">确认删除</button>
+                        <button class="btn" id="cancelDeleteQuestionsBtn" onclick="cancelQuestionBatchDelete()" style="display:none;">取消</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th id="questionIdHeader">ID</th>
+                                <th>题目内容</th>
+                                <th>类型</th>
+                                <th>教师</th>
+                                <th>创建时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="questionsTable"></tbody>
+                    </table>
+                    <div class="pagination" id="questionsPagination"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 成绩管理页面 -->
+        <div id="scores" class="page-section">
+            <div class="card">
+                <div class="card-header">
+                    <h3>成绩列表</h3>
+                </div>
+                <div class="card-body">
+                    <div class="search-bar">
+                        <input type="text" id="scoreKeyword" placeholder="搜索学生ID...">
+                        <button class="btn btn-primary" onclick="loadScores()">搜索</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>学生</th>
+                                <th>考试</th>
+                                <th>组</th>
+                                <th>总分</th>
+                                <th>满分</th>
+                                <th>得分率</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="scoresTable"></tbody>
+                    </table>
+                    <div class="pagination" id="scoresPagination"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑用户弹窗 -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑用户</h3>
+                <button class="modal-close" onclick="closeModal('editUserModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editUserId">
+                <input type="hidden" id="editUserRegistrationType">
+                <div class="form-group">
+                    <label>昵称</label>
+                    <input type="text" id="editUserNickname">
+                </div>
+                <div class="form-group" id="editEmailGroup" style="display:none;">
+                    <label>邮箱</label>
+                    <div style="display:flex;gap:10px;">
+                        <input type="text" id="editUserEmailPrefix" style="flex:1;">
+                        <select id="editUserEmailDomain" style="width:150px;">
+                            <option value="@qq.com">@qq.com</option>
+                            <option value="@163.com">@163.com</option>
+                            <option value="@outlook.com">@outlook.com</option>
+                            <option value="@sina.com">@sina.com</option>
+                            <option value="@gmail.com">@gmail.com</option>
+                            <option value="@aliyun.com">@aliyun.com</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" id="editPhoneGroup" style="display:none;">
+                    <label>手机号</label>
+                    <input type="text" id="editUserPhone" maxlength="11" placeholder="请输入11位手机号">
+                </div>
+                <div class="form-group">
+                    <label>学号/工号</label>
+                    <input type="text" id="editUserStaffId">
+                </div>
+                <div class="form-group">
+                    <label>角色</label>
+                    <select id="editUserRole">
+                        <option value="TEACHER">教师</option>
+                        <option value="STUDENT">学生</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('editUserModal')">取消</button>
+                <button class="btn btn-primary" onclick="saveUser()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 重置密码弹窗 -->
+    <div id="resetPasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>重置密码</h3>
+                <button class="modal-close" onclick="closeModal('resetPasswordModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="resetPasswordUserId">
+                <div class="form-group">
+                    <label>新密码</label>
+                    <input type="password" id="newPassword" placeholder="请输入新密码">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('resetPasswordModal')">取消</button>
+                <button class="btn btn-primary" onclick="savePassword()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑成绩弹窗 -->
+    <div id="editScoreModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>修改成绩</h3>
+                <button class="modal-close" onclick="closeModal('editScoreModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editScoreId">
+                <div class="form-group">
+                    <label>总分</label>
+                    <input type="number" id="editTotalScore" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>客观题得分</label>
+                    <input type="number" id="editObjectiveScore" step="0.1">
+                </div>
+                <div class="form-group">
+                    <label>主观题得分</label>
+                    <input type="number" id="editSubjectiveScore" step="0.1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('editScoreModal')">取消</button>
+                <button class="btn btn-primary" onclick="saveScore()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/admin';
+        let currentUserPage = 1;
+        let currentGroupPage = 1;
+        let currentExamPage = 1;
+        let currentPaperPage = 1;
+        let currentQuestionPage = 1;
+        let currentScorePage = 1;
+        const pageSize = 10;
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('jwt_token');
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            };
+        }
+
+        async function fetchAPI(url, options = {}) {
+            const response = await fetch(url, {
+                ...options,
+                headers: { ...getAuthHeaders(), ...options.headers }
+            });
+            if (response.status === 401 || response.status === 403) {
+                localStorage.clear();
+                window.location.href = '/log.html';
+                return null;
+            }
+            return response.json();
+        }
+
+        function checkAuth() {
+            const token = localStorage.getItem('jwt_token');
+            const role = localStorage.getItem('user_role');
+            if (!token || role?.toUpperCase() !== 'ADMIN') {
+                window.location.href = '/log.html';
+                return false;
+            }
+            document.getElementById('adminName').textContent = localStorage.getItem('username') || '管理员';
+            return true;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/log.html';
+        }
+
+        // 页面导航
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+                
+                this.classList.add('active');
+                const page = this.dataset.page;
+                document.getElementById(page).classList.add('active');
+                
+                const titles = {
+                    dashboard: '数据概览',
+                    users: '用户管理',
+                    groups: '组管理',
+                    exams: '考试管理',
+                    papers: '试卷管理',
+                    questions: '题目管理',
+                    scores: '成绩管理'
+                };
+                document.getElementById('pageTitle').textContent = titles[page];
+                
+                if (page === 'dashboard') loadStatistics();
+                else if (page === 'users') loadUsers();
+                else if (page === 'groups') loadGroups();
+                else if (page === 'exams') loadExams();
+                else if (page === 'papers') loadPapers();
+                else if (page === 'questions') loadQuestions();
+                else if (page === 'scores') loadScores();
+            });
+        });
+
+        // 加载统计数据
+        async function loadStatistics() {
+            const result = await fetchAPI(`${API_BASE}/statistics`);
+            if (result?.success) {
+                const data = result.data;
+                document.getElementById('statUsers').textContent = data.totalUsers || 0;
+                document.getElementById('statTeachers').textContent = data.totalTeachers || 0;
+                document.getElementById('statStudents').textContent = data.totalStudents || 0;
+                document.getElementById('statGroups').textContent = data.totalGroups || 0;
+                document.getElementById('statExams').textContent = data.totalExams || 0;
+                document.getElementById('statPapers').textContent = data.totalPapers || 0;
+                document.getElementById('statQuestions').textContent = data.totalQuestions || 0;
+                document.getElementById('statScores').textContent = data.totalScores || 0;
+            }
+            loadTeacherCode();
+        }
+
+        async function loadTeacherCode() {
+            const result = await fetchAPI('/api/admin/teacher-register-code');
+            if (result?.success) {
+                document.getElementById('teacherRegisterCode').textContent = result.data.code;
+            }
+        }
+
+        async function refreshTeacherCode() {
+            if (!confirm('确定要刷新教师注册码吗？刷新后旧的注册码将失效。')) return;
+            
+            const result = await fetchAPI('/api/admin/teacher-register-code/refresh', { method: 'POST' });
+            if (result?.success) {
+                document.getElementById('teacherRegisterCode').textContent = result.data.code;
+                alert('教师注册码已刷新！');
+            } else {
+                alert(result?.message || '刷新失败');
+            }
+        }
+
+        // 用户管理
+        async function loadUsers(page = 1) {
+            currentUserPage = page;
+            const role = document.getElementById('userRoleFilter').value;
+            const keyword = document.getElementById('userKeyword').value;
+            
+            let url = `${API_BASE}/users?page=${page}&size=${pageSize}`;
+            if (role) url += `&role=${role}`;
+            if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+            
+            const result = await fetchAPI(url);
+            if (result?.success) {
+                renderUsersTable(result.data.users);
+                renderPagination('usersPagination', result.data, loadUsers);
+            }
+        }
+
+        function renderUsersTable(users) {
+            const tbody = document.getElementById('usersTable');
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.nickname || '-'}</td>
+                    <td>${user.email || '-'}</td>
+                    <td><span class="badge ${user.role === 'TEACHER' ? 'badge-blue' : 'badge-green'}">${user.role === 'TEACHER' ? '教师' : '学生'}</span></td>
+                    <td class="actions">
+                        <button class="btn btn-primary btn-sm" onclick="editUser(${user.id}, '${user.nickname || ''}', '${user.email || ''}', '${user.phone || ''}', '${user.studentStaffId || ''}', '${user.role}', '${user.registrationType || 'EMAIL'}')">编辑</button>
+                        <button class="btn btn-warning btn-sm" onclick="showResetPassword(${user.id})">重置密码</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editUser(id, nickname, email, phone, staffId, role, registrationType) {
+            document.getElementById('editUserId').value = id;
+            document.getElementById('editUserRegistrationType').value = registrationType;
+            document.getElementById('editUserNickname').value = nickname;
+            document.getElementById('editUserStaffId').value = staffId;
+            document.getElementById('editUserRole').value = role;
+            
+            const emailGroup = document.getElementById('editEmailGroup');
+            const phoneGroup = document.getElementById('editPhoneGroup');
+            
+            if (registrationType === 'EMAIL') {
+                emailGroup.style.display = 'block';
+                phoneGroup.style.display = 'none';
+                
+                if (email && email.includes('@')) {
+                    const parts = email.split('@');
+                    document.getElementById('editUserEmailPrefix').value = parts[0];
+                    const domain = '@' + parts[1];
+                    const domainSelect = document.getElementById('editUserEmailDomain');
+                    for (let i = 0; i < domainSelect.options.length; i++) {
+                        if (domainSelect.options[i].value === domain) {
+                            domainSelect.selectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            } else if (registrationType === 'PHONE') {
+                emailGroup.style.display = 'none';
+                phoneGroup.style.display = 'block';
+                document.getElementById('editUserPhone').value = phone || '';
+            }
+            
+            document.getElementById('editUserModal').classList.add('show');
+        }
+
+        async function saveUser() {
+            const id = document.getElementById('editUserId').value;
+            const registrationType = document.getElementById('editUserRegistrationType').value;
+            
+            let data = {
+                nickname: document.getElementById('editUserNickname').value,
+                studentStaffId: document.getElementById('editUserStaffId').value,
+                role: document.getElementById('editUserRole').value
+            };
+            
+            if (registrationType === 'EMAIL') {
+                const emailPrefix = document.getElementById('editUserEmailPrefix').value;
+                const emailDomain = document.getElementById('editUserEmailDomain').value;
+                if (!emailPrefix) {
+                    alert('请输入邮箱前缀');
+                    return;
+                }
+                data.email = emailPrefix + emailDomain;
+            } else if (registrationType === 'PHONE') {
+                const phone = document.getElementById('editUserPhone').value;
+                if (!phone || phone.length !== 11 || !/^1[3-9]\d{9}$/.test(phone)) {
+                    alert('请输入正确的11位手机号');
+                    return;
+                }
+                data.phone = phone;
+            }
+            
+            const result = await fetchAPI(`${API_BASE}/users/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+            
+            if (result?.success) {
+                closeModal('editUserModal');
+                loadUsers(currentUserPage);
+                alert('用户信息已更新');
+            } else {
+                alert(result?.message || '更新失败');
+            }
+        }
+
+        function showResetPassword(id) {
+            document.getElementById('resetPasswordUserId').value = id;
+            document.getElementById('newPassword').value = '';
+            document.getElementById('resetPasswordModal').classList.add('show');
+        }
+
+        async function savePassword() {
+            const id = document.getElementById('resetPasswordUserId').value;
+            const password = document.getElementById('newPassword').value;
+            
+            if (!password) {
+                alert('请输入新密码');
+                return;
+            }
+            
+            const result = await fetchAPI(`${API_BASE}/users/${id}/password`, {
+                method: 'PUT',
+                body: JSON.stringify({ newPassword: password })
+            });
+            
+            if (result?.success) {
+                closeModal('resetPasswordModal');
+                alert('密码已重置');
+            } else {
+                alert(result?.message || '重置失败');
+            }
+        }
+
+        async function deleteUser(id) {
+            if (!confirm('确定要删除该用户吗？此操作不可恢复！')) return;
+            
+            const result = await fetchAPI(`${API_BASE}/users/${id}`, { method: 'DELETE' });
+            if (result?.success) {
+                loadUsers(currentUserPage);
+                alert('用户已删除');
+            } else {
+                alert(result?.message || '删除失败');
+            }
+        }
+
+        // 组管理
+        async function loadGroups(page = 1) {
+            currentGroupPage = page;
+            const keyword = document.getElementById('groupKeyword').value;
+            
+            let url = `${API_BASE}/groups?page=${page}&size=${pageSize}`;
+            if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+            
+            const result = await fetchAPI(url);
+            if (result?.success) {
+                renderGroupsTable(result.data.groups);
+                renderPagination('groupsPagination', result.data, loadGroups);
+            }
+        }
+
+        function renderGroupsTable(groups) {
+            const tbody = document.getElementById('groupsTable');
+            tbody.innerHTML = groups.map(group => `
+                <tr>
+                    <td>${group.id}</td>
+                    <td>${group.groupName}</td>
+                    <td>${group.teacherName || '-'}</td>
+                    <td>${group.memberCount || 0}</td>
+                    <td>${formatDate(group.createdAt)}</td>
+                    <td class="actions">
+                        <button class="btn btn-danger btn-sm" onclick="deleteGroup(${group.id})">解散组</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteGroup(id) {
+            if (!confirm('确定要解散该组吗？此操作不可恢复！')) return;
+            
+            const result = await fetchAPI(`${API_BASE}/groups/${id}`, { method: 'DELETE' });
+            if (result?.success) {
+                loadGroups(currentGroupPage);
+                alert('组已解散');
+            } else {
+                alert(result?.message || '解散失败');
+            }
+        }
+
+        // 考试管理
+        async function loadExams(page = 1) {
+            currentExamPage = page;
+            const keyword = document.getElementById('examKeyword').value;
+            
+            let url = `${API_BASE}/exams?page=${page}&size=${pageSize}`;
+            if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+            
+            const result = await fetchAPI(url);
+            if (result?.success) {
+                renderExamsTable(result.data.exams);
+                renderPagination('examsPagination', result.data, loadExams);
+            }
+        }
+
+        function renderExamsTable(exams) {
+            const tbody = document.getElementById('examsTable');
+            tbody.innerHTML = exams.map(exam => `
+                <tr>
+                    <td>${exam.id}</td>
+                    <td>${exam.examName}</td>
+                    <td>${exam.teacherName || '-'}</td>
+                    <td>${exam.paperName || '-'}</td>
+                    <td>${exam.groupName || '-'}</td>
+                    <td><span class="badge ${exam.status === '已结束' ? 'badge-red' : exam.status === '进行中' ? 'badge-green' : 'badge-orange'}">${exam.status}</span></td>
+                    <td class="actions">
+                        <button class="btn btn-danger btn-sm" onclick="deleteExam(${exam.id})">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deleteExam(id) {
+            if (!confirm('确定要删除该考试吗？')) return;
+            
+            const result = await fetchAPI(`${API_BASE}/exams/${id}`, { method: 'DELETE' });
+            if (result?.success) {
+                loadExams(currentExamPage);
+                alert('考试已删除');
+            } else {
+                alert(result?.message || '删除失败');
+            }
+        }
+
+        // 试卷管理
+        async function loadPapers(page = 1) {
+            currentPaperPage = page;
+            const keyword = document.getElementById('paperKeyword').value;
+            
+            let url = `${API_BASE}/papers?page=${page}&size=${pageSize}`;
+            if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+            
+            const result = await fetchAPI(url);
+            if (result?.success) {
+                renderPapersTable(result.data.papers);
+                renderPagination('papersPagination', result.data, loadPapers);
+            }
+        }
+
+        function renderPapersTable(papers) {
+            const tbody = document.getElementById('papersTable');
+            tbody.innerHTML = papers.map(paper => `
+                <tr>
+                    <td>${paper.id}</td>
+                    <td>${paper.paperName}</td>
+                    <td>${paper.teacherName || '-'}</td>
+                    <td>${paper.questionCount || 0}</td>
+                    <td>${paper.totalScore || 0}</td>
+                    <td class="actions">
+                        <button class="btn btn-danger btn-sm" onclick="deletePaper(${paper.id})">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function deletePaper(id) {
+            if (!confirm('确定要删除该试卷吗？')) return;
+            
+            const result = await fetchAPI(`${API_BASE}/papers/${id}`, { method: 'DELETE' });
+            if (result?.success) {
+                loadPapers(currentPaperPage);
+                alert('试卷已删除');
+            } else {
+                alert(result?.message || '删除失败');
+            }
+        }
+
+        // 题目管理
+        let isQuestionBatchDeleteMode = false;
+        let selectedQuestionIds = new Set();
+
+        async function loadQuestions(page = 1) {
+            currentQuestionPage = page;
+            const keyword = document.getElementById('questionKeyword').value;
+            
+            let url = `${API_BASE}/questions?page=${page}&size=${pageSize}`;
+            if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+            
+            const result = await fetchAPI(url);
+            if (result?.success) {
+                renderQuestionsTable(result.data.questions);
+                renderPagination('questionsPagination', result.data, loadQuestions);
+            }
+        }
+
+        function renderQuestionsTable(questions) {
+            const tbody = document.getElementById('questionsTable');
+            const typeMap = {
+                'SINGLE_CHOICE': '单选题',
+                'MULTIPLE_CHOICE': '多选题',
+                'TRUE_FALSE': '判断题',
+                'FILL_BLANK': '填空题',
+                'SHORT_ANSWER': '简答题'
+            };
+            
+            if (isQuestionBatchDeleteMode) {
+                tbody.innerHTML = questions.map(q => `
+                    <tr>
+                        <td><input type="checkbox" class="question-checkbox" value="${q.id}" ${selectedQuestionIds.has(q.id) ? 'checked' : ''} onchange="toggleQuestionSelection(${q.id}, this.checked)"></td>
+                        <td>${q.content?.substring(0, 50) || '-'}${q.content?.length > 50 ? '...' : ''}</td>
+                        <td><span class="badge badge-purple">${typeMap[q.questionType] || q.questionType}</span></td>
+                        <td>${q.teacherName || '-'}</td>
+                        <td>${formatDate(q.createdAt)}</td>
+                        <td></td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = questions.map(q => `
+                    <tr>
+                        <td>${q.id}</td>
+                        <td>${q.content?.substring(0, 50) || '-'}${q.content?.length > 50 ? '...' : ''}</td>
+                        <td><span class="badge badge-purple">${typeMap[q.questionType] || q.questionType}</span></td>
+                        <td>${q.teacherName || '-'}</td>
+                        <td>${formatDate(q.createdAt)}</td>
+                        <td class="actions">
+                            <button class="btn btn-danger btn-sm" onclick="deleteQuestion(${q.id})">删除</button>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function toggleQuestionBatchDeleteMode() {
+            isQuestionBatchDeleteMode = true;
+            selectedQuestionIds.clear();
+            
+            document.getElementById('batchDeleteQuestionsBtn').style.display = 'none';
+            document.getElementById('confirmDeleteQuestionsBtn').style.display = 'inline-block';
+            document.getElementById('cancelDeleteQuestionsBtn').style.display = 'inline-block';
+            document.getElementById('questionIdHeader').innerHTML = '<input type="checkbox" id="selectAllQuestions" onchange="toggleSelectAllQuestions(this)">';
+            
+            loadQuestions(currentQuestionPage);
+        }
+
+        function cancelQuestionBatchDelete() {
+            isQuestionBatchDeleteMode = false;
+            selectedQuestionIds.clear();
+            
+            document.getElementById('batchDeleteQuestionsBtn').style.display = 'inline-block';
+            document.getElementById('confirmDeleteQuestionsBtn').style.display = 'none';
+            document.getElementById('cancelDeleteQuestionsBtn').style.display = 'none';
+            document.getElementById('questionIdHeader').textContent = 'ID';
+            
+            loadQuestions(currentQuestionPage);
+        }
+
+        function toggleSelectAllQuestions(source) {
+            const checkboxes = document.querySelectorAll('.question-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = source.checked;
+                const qId = parseInt(checkbox.value);
+                if (source.checked) {
+                    selectedQuestionIds.add(qId);
+                } else {
+                    selectedQuestionIds.delete(qId);
+                }
+            });
+        }
+
+        function toggleQuestionSelection(qId, checked) {
+            if (checked) {
+                selectedQuestionIds.add(qId);
+            } else {
+                selectedQuestionIds.delete(qId);
+            }
+            
+            const allCheckboxes = document.querySelectorAll('.question-checkbox');
+            const selectAllCheckbox = document.getElementById('selectAllQuestions');
+            const checkedCount = document.querySelectorAll('.question-checkbox:checked').length;
+            
+            if (checkedCount === allCheckboxes.length && allCheckboxes.length > 0) {
+                selectAllCheckbox.checked = true;
+            } else {
+                selectAllCheckbox.checked = false;
+            }
+        }
+
+        async function confirmBatchDeleteQuestions() {
+            if (selectedQuestionIds.size === 0) {
+                alert('请至少选择一道题目');
+                return;
+            }
+            
+            if (!confirm(`确定要删除选中的 ${selectedQuestionIds.size} 道题目吗？`)) return;
+            
+            const ids = Array.from(selectedQuestionIds);
+            let successCount = 0;
+            let failCount = 0;
+            
+            for (const id of ids) {
+                try {
+                    const result = await fetchAPI(`${API_BASE}/questions/${id}`, { method: 'DELETE' });
+                    if (result?.success) {
+                        successCount++;
+                    } else {
+                        failCount++;
+                    }
+                } catch (e) {
+                    failCount++;
+                }
+            }
+            
+            alert(`删除完成：成功 ${successCount} 道，失败 ${failCount} 道`);
+            cancelQuestionBatchDelete();
+            loadQuestions(currentQuestionPage);
+        }
+
+        async function deleteQuestion(id) {
+            if (!confirm('确定要删除该题目吗？')) return;
+            
+            const result = await fetchAPI(`${API_BASE}/questions/${id}`, { method: 'DELETE' });
+            if (result?.success) {
+                loadQuestions(currentQuestionPage);
+                alert('题目已删除');
+            } else {
+                alert(result?.message || '删除失败');
+            }
+        }
+
+        // 成绩管理
+        async function loadScores(page = 1) {
+            currentScorePage = page;
+            const keyword = document.getElementById('scoreKeyword').value;
+            
+            let url = `${API_BASE}/scores?page=${page}&size=${pageSize}`;
+            if (keyword) url += `&keyword=${encodeURIComponent(keyword)}`;
+            
+            const result = await fetchAPI(url);
+            if (result?.success) {
+                renderScoresTable(result.data.scores);
+                renderPagination('scoresPagination', result.data, loadScores);
+            }
+        }
+
+        function renderScoresTable(scores) {
+            const tbody = document.getElementById('scoresTable');
+            tbody.innerHTML = scores.map(score => `
+                <tr>
+                    <td>${score.id}</td>
+                    <td>${score.studentName || score.studentId}</td>
+                    <td>${score.examName || '-'}</td>
+                    <td>${score.groupName || '-'}</td>
+                    <td>${score.totalScore?.toFixed(1) || '-'}</td>
+                    <td>${score.maxScore?.toFixed(0) || '-'}</td>
+                    <td>${score.scorePercentage?.toFixed(1) || '-'}%</td>
+                    <td class="actions">
+                        <button class="btn btn-primary btn-sm" onclick="editScore(${score.id}, ${score.totalScore}, ${score.objectiveScore}, ${score.subjectiveScore})">修改</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteScore(${score.id})">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editScore(id, totalScore, objectiveScore, subjectiveScore) {
+            document.getElementById('editScoreId').value = id;
+            document.getElementById('editTotalScore').value = totalScore || 0;
+            document.getElementById('editObjectiveScore').value = objectiveScore || 0;
+            document.getElementById('editSubjectiveScore').value = subjectiveScore || 0;
+            document.getElementById('editScoreModal').classList.add('show');
+        }
+
+        async function saveScore() {
+            const id = document.getElementById('editScoreId').value;
+            const data = {
+                totalScore: parseFloat(document.getElementById('editTotalScore').value),
+                objectiveScore: parseFloat(document.getElementById('editObjectiveScore').value),
+                subjectiveScore: parseFloat(document.getElementById('editSubjectiveScore').value)
+            };
+            
+            const result = await fetchAPI(`${API_BASE}/scores/${id}`, {
+                method: 'PUT',
+                body: JSON.stringify(data)
+            });
+            
+            if (result?.success) {
+                closeModal('editScoreModal');
+                loadScores(currentScorePage);
+                alert('成绩已修改');
+            } else {
+                alert(result?.message || '修改失败');
+            }
+        }
+
+        async function deleteScore(id) {
+            if (!confirm('确定要删除该成绩记录吗？')) return;
+            
+            const result = await fetchAPI(`${API_BASE}/scores/${id}`, { method: 'DELETE' });
+            if (result?.success) {
+                loadScores(currentScorePage);
+                alert('成绩记录已删除');
+            } else {
+                alert(result?.message || '删除失败');
+            }
+        }
+
+        // 分页渲染
+        function renderPagination(elementId, data, loadFunc) {
+            const pagination = document.getElementById(elementId);
+            const { total, page, totalPages } = data;
+            
+            pagination.innerHTML = `
+                <button ${page <= 1 ? 'disabled' : ''} onclick="${loadFunc.name}(${page - 1})">上一页</button>
+                <span>第 ${page} / ${totalPages} 页，共 ${total} 条</span>
+                <button ${page >= totalPages ? 'disabled' : ''} onclick="${loadFunc.name}(${page + 1})">下一页</button>
+            `;
+        }
+
+        // 弹窗操作
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('show');
+        }
+
+        // 日期格式化
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleString('zh-CN');
+        }
+
+        // 初始化
+        window.onload = function() {
+            if (checkAuth()) {
+                loadStatistics();
+            }
+        };
+    </script>
+</body>
+</html>

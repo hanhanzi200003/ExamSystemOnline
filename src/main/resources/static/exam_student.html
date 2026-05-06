@@ -1,0 +1,2588 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在线考试系统 - 学生端</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #10b981;
+            --primary-dark: #059669;
+            --primary-light: #d1fae5;
+            --secondary-color: #f59e0b;
+            --secondary-dark: #d97706;
+            --secondary-light: #fef3c7;
+            --success-color: #22c55e;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --info-color: #06b6d4;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --radius: 8px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-color);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .logo-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-color);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-color);
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .user-info:hover {
+            background: var(--border-color);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .user-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 260px;
+            padding: 24px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            background: var(--bg-color);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 13px;
+        }
+
+        .btn-lg {
+            padding: 14px 28px;
+            font-size: 16px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            font-size: 14px;
+            transition: all 0.2s;
+            background: var(--card-bg);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        input::-ms-reveal,
+        input::-webkit-credentials-auto-fill-button,
+        input::-webkit-caps-lock-indicator {
+            display: none;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .password-input-wrapper .form-input {
+            padding-right: 45px;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .password-toggle-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .password-toggle-btn i {
+            font-size: 18px;
+        }
+
+        .password-toggle-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-green {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .badge-orange {
+            background: var(--secondary-light);
+            color: var(--secondary-dark);
+        }
+
+        .badge-red {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .badge-gray {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .badge-blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon.green {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .stat-icon.orange {
+            background: var(--secondary-light);
+            color: var(--secondary-color);
+        }
+
+        .stat-icon.red {
+            background: #fee2e2;
+            color: var(--danger-color);
+        }
+
+        .stat-icon.blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-color);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        tr:hover {
+            background: var(--bg-color);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
+        .modal.large {
+            max-width: 700px;
+        }
+
+        .modal.xlarge {
+            max-width: 900px;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .toast {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: var(--radius);
+            background: var(--card-bg);
+            box-shadow: var(--shadow-lg);
+            z-index: 2000;
+            transform: translateX(120%);
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success-color);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .group-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            transition: all 0.2s;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 280px;
+        }
+
+        .group-card:hover {
+            box-shadow: var(--shadow);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 900px) {
+            .groups-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .group-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .group-teacher {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .group-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .group-meta span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .exam-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .exam-card:hover {
+            box-shadow: var(--shadow);
+        }
+
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .exam-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .exam-group-name {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .exam-creator {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .exam-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: var(--bg-color);
+            border-radius: var(--radius);
+        }
+
+        .exam-info-item {
+            text-align: center;
+        }
+
+        .exam-info-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .exam-info-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .exam-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .record-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .record-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .record-meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .record-score {
+            text-align: right;
+        }
+
+        .score-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .score-value.excellent {
+            color: var(--success-color);
+        }
+
+        .score-value.good {
+            color: var(--primary-color);
+        }
+
+        .score-value.pass {
+            color: var(--secondary-color);
+        }
+
+        .score-value.fail {
+            color: var(--danger-color);
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .record-details {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg-color);
+            border-radius: var(--radius);
+            margin-bottom: 16px;
+        }
+
+        .join-code-input {
+            display: flex;
+            gap: 12px;
+        }
+
+        .join-code-input input {
+            flex: 1;
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 8px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .profile-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+
+        .profile-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-item:last-child {
+            border-bottom: none;
+        }
+
+        .profile-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .profile-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .danger-zone {
+            border: 1px solid var(--danger-color);
+            background: #fef2f2;
+        }
+
+        .danger-zone h3 {
+            color: var(--danger-color);
+        }
+
+        .pending-exam-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .pending-exam-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .pending-exam-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--secondary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+        }
+
+        .pending-exam-icon i {
+            font-size: 40px;
+            color: var(--secondary-color);
+        }
+
+        .pending-exam-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .pending-exam-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .pending-exam-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 24px;
+            padding: 12px;
+            background: var(--primary-light);
+            border-radius: var(--radius);
+        }
+
+        .pending-exam-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .countdown {
+            font-size: 14px;
+            color: var(--danger-color);
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .exam-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .record-details {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .profile-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .record-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon"><i class="ri-graduation-cap-line"></i></div>
+                <div>
+                    <div class="logo-text">在线考试系统</div>
+                    <div class="logo-sub">学生端</div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">主菜单</div>
+                <div class="nav-item active" onclick="showPage('home')">
+                    <i class="ri-home-5-line"></i>
+                    <span>首页</span>
+                </div>
+                <div class="nav-item" onclick="showPage('groups')">
+                    <i class="ri-team-line"></i>
+                    <span>我的组</span>
+                </div>
+                <div class="nav-item" onclick="showPage('exams')">
+                    <i class="ri-file-list-3-line"></i>
+                    <span>待参加考试</span>
+                </div>
+                <div class="nav-item" onclick="showPage('records')">
+                    <i class="ri-history-line"></i>
+                    <span>考试记录</span>
+                </div>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">其他</div>
+                <div class="nav-item" onclick="showPage('profile')">
+                    <i class="ri-user-settings-line"></i>
+                    <span>个人中心</span>
+                </div>
+                <div class="nav-item" onclick="logout()">
+                    <i class="ri-logout-box-line"></i>
+                    <span>退出登录</span>
+                </div>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info" onclick="showPage('profile')">
+                <div class="user-avatar" id="userAvatar">学</div>
+                <div class="user-details">
+                    <div class="user-name" id="userName">加载中...</div>
+                    <div class="user-role">学生</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <!-- 首页 -->
+        <div id="page-home" class="page active">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">欢迎回来</h1>
+                    <p class="page-subtitle" id="welcomeSubtitle">今天是学习的好日子</p>
+                </div>
+                <button class="btn btn-primary" onclick="showJoinGroupModal()">
+                    <i class="ri-add-line"></i> 加入新组
+                </button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="ri-team-line"></i></div>
+                    <div class="stat-value" id="statGroups">0</div>
+                    <div class="stat-label">已加入的组</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="ri-file-list-3-line"></i></div>
+                    <div class="stat-value" id="statPendingExams">0</div>
+                    <div class="stat-label">待参加考试</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="ri-check-double-line"></i></div>
+                    <div class="stat-value" id="statCompletedExams">0</div>
+                    <div class="stat-label">已完成考试</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon red"><i class="ri-trophy-line"></i></div>
+                    <div class="stat-value" id="statAvgScore">-</div>
+                    <div class="stat-label">平均得分率</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">最近的考试</h3>
+                    <button class="btn btn-outline btn-sm" onclick="showPage('exams')">查看全部</button>
+                </div>
+                <div class="card-body" id="recentExams">
+                    <div class="empty-state">
+                        <i class="ri-file-list-3-line"></i>
+                        <h3>暂无待参加的考试</h3>
+                        <p>加入组后，老师发布的考试会显示在这里</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的组 -->
+        <div id="page-groups" class="page">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">我的组</h1>
+                    <p class="page-subtitle">管理您加入的考试组</p>
+                </div>
+                <button class="btn btn-primary" onclick="showJoinGroupModal()">
+                    <i class="ri-add-line"></i> 加入新组
+                </button>
+            </div>
+
+            <div id="groupsList"></div>
+        </div>
+
+        <!-- 待参加考试 -->
+        <div id="page-exams" class="page">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">待参加考试</h1>
+                    <p class="page-subtitle">查看所有可以参加的考试</p>
+                </div>
+            </div>
+
+            <div class="filter-bar" style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;">
+                <select id="examGroupFilter" class="form-input" style="width: auto; min-width: 150px;" onchange="applyExamFilter()">
+                    <option value="">全部组</option>
+                </select>
+                <select id="examStatusFilter" class="form-input" style="width: auto; min-width: 120px;" onchange="applyExamFilter()">
+                    <option value="">全部状态</option>
+                    <option value="available">可参加</option>
+                    <option value="notStarted">未开始</option>
+                    <option value="expired">已结束</option>
+                </select>
+                <button class="btn btn-outline btn-sm" onclick="clearExamFilter()">
+                    <i class="ri-refresh-line"></i> 重置
+                </button>
+            </div>
+
+            <div id="examsList"></div>
+        </div>
+
+        <!-- 考试记录 -->
+        <div id="page-records" class="page">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">考试记录</h1>
+                    <p class="page-subtitle">查看您的考试历史和成绩</p>
+                </div>
+            </div>
+
+            <div id="recordsList"></div>
+        </div>
+
+        <!-- 个人中心 -->
+        <div id="page-profile" class="page">
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title">个人中心</h1>
+                    <p class="page-subtitle">管理您的个人信息</p>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <div class="profile-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border-color);">
+                        <h3 style="margin: 0;"><i class="ri-user-line"></i> 基本信息</h3>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-primary btn-sm" id="editProfileBtn" onclick="toggleEditMode()">
+                                <i class="ri-edit-line"></i> 修改个人信息
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="showChangePasswordModal()">
+                                <i class="ri-lock-password-line"></i> 修改密码
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="showDeleteAccountModal()">
+                                <i class="ri-delete-bin-line"></i> 注销账号
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 查看模式 -->
+                    <div id="profileViewMode">
+                        <div class="profile-item">
+                            <span class="profile-label">账号</span>
+                            <span class="profile-value" id="viewUsername">-</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">姓名/昵称</span>
+                            <span class="profile-value" id="viewNickname">-</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">学工号</span>
+                            <span class="profile-value" id="viewStudentId">-</span>
+                        </div>
+                    </div>
+
+                    <!-- 编辑模式 -->
+                    <div id="profileEditMode" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">账号</label>
+                            <input type="text" class="form-input" id="profileUsername" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">姓名/昵称</label>
+                            <input type="text" class="form-input" id="profileNickname" placeholder="请输入姓名" data-regex="[^a-zA-Z0-9\u4e00-\u9fa5]" maxlength="20">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">学工号</label>
+                            <input type="text" class="form-input" id="profileStudentId" placeholder="请输入学工号" data-regex="[^A-Za-z0-9]" maxlength="12">
+                        </div>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-primary" onclick="updateProfile()">
+                                <i class="ri-save-line"></i> 保存修改
+                            </button>
+                            <button class="btn btn-outline" onclick="cancelEdit()">
+                                <i class="ri-close-line"></i> 取消
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="profile-card" style="margin-bottom: 24px;">
+                        <h3><i class="ri-bar-chart-box-line"></i> 学习统计</h3>
+                        <div class="profile-item">
+                            <span class="profile-label">已加入组数</span>
+                            <span class="profile-value" id="profileGroupCount">0</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">已完成考试</span>
+                            <span class="profile-value" id="profileExamCount">0</span>
+                        </div>
+                        <div class="profile-item">
+                            <span class="profile-label">平均得分率</span>
+                            <span class="profile-value" id="profileAvgScore">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+        let currentUser = null;
+        let pendingExamSession = null;
+
+        function getAuthHeaders() {
+            const token = localStorage.getItem('jwt_token');
+            return {
+                'Content-Type': 'application/json',
+                'Authorization': token ? `Bearer ${token}` : ''
+            };
+        }
+
+        async function fetchAPI(url, options = {}) {
+            try {
+                const response = await fetch('/api' + url, {
+                    ...options,
+                    headers: {
+                        ...getAuthHeaders(),
+                        ...options.headers
+                    }
+                });
+
+                if (response.status === 401) {
+                    localStorage.removeItem('jwt_token');
+                    localStorage.removeItem('user_role');
+                    window.location.href = '/log.html';
+                    return null;
+                }
+
+                const data = await response.json();
+                return data;
+            } catch (e) {
+                console.error('API Error:', e);
+                showToast('网络错误，请稍后重试', 'error');
+                return null;
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `
+                <i class="ri-${type === 'success' ? 'check' : type === 'error' ? 'error-warning' : 'information'}-line"></i>
+                <span>${message}</span>
+            `;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatQuestionType(type) {
+            const typeMap = {
+                'SINGLE_CHOICE': '单选题',
+                'MULTIPLE_CHOICE': '多选题',
+                'TRUE_FALSE': '判断题',
+                'SHORT_ANSWER': '简答题',
+                'FILL_BLANK': '填空题'
+            };
+            return typeMap[type] || type;
+        }
+
+        function formatDuration(minutes) {
+            if (!minutes) return '-';
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            if (hours > 0) {
+                return `${hours}小时${mins > 0 ? mins + '分钟' : ''}`;
+            }
+            return `${mins}分钟`;
+        }
+
+        function showPage(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            document.getElementById(`page-${pageName}`).classList.add('active');
+            event.currentTarget?.classList.add('active');
+
+            switch(pageName) {
+                case 'home':
+                    loadHomeData();
+                    break;
+                case 'groups':
+                    loadGroups();
+                    break;
+                case 'exams':
+                    loadExams();
+                    break;
+                case 'records':
+                    loadRecords();
+                    break;
+                case 'profile':
+                    loadProfile();
+                    break;
+            }
+        }
+
+        async function initUser() {
+            const token = localStorage.getItem('jwt_token');
+            const role = localStorage.getItem('user_role');
+
+            if (!token || role !== 'STUDENT') {
+                window.location.href = '/log.html';
+                return false;
+            }
+
+            try {
+                const result = await fetchAPI('/users/me');
+                if (result && result.data) {
+                    currentUser = result.data;
+                    const displayName = result.data.nickname || result.data.username || '学生';
+                    document.getElementById('userName').textContent = displayName;
+                    document.getElementById('userAvatar').textContent = displayName[0];
+                }
+            } catch (e) {
+                console.error('获取用户信息失败:', e);
+            }
+
+            return true;
+        }
+
+        async function checkPendingExam() {
+            const result = await fetchAPI('/exam-session/check-ongoing');
+            if (result && result.hasOngoingExam && result.data) {
+                pendingExamSession = result.data;
+                
+                const examResult = await fetchAPI(`/exams/${result.data.examId}`);
+                if (examResult && examResult.data) {
+                    pendingExamSession.examName = examResult.data.examName;
+                }
+                
+                showPendingExamAlert(pendingExamSession);
+                return true;
+            }
+            return false;
+        }
+
+        function showPendingExamAlert(session) {
+            const modal = document.createElement('div');
+            modal.className = 'pending-exam-alert';
+            modal.id = 'pendingExamAlert';
+            modal.innerHTML = `
+                <div class="pending-exam-card">
+                    <div class="pending-exam-icon">
+                        <i class="ri-time-line"></i>
+                    </div>
+                    <h2 class="pending-exam-title">您有未完成的考试</h2>
+                    <p class="pending-exam-desc">检测到您有一场考试正在进行中，请尽快完成</p>
+                    <div class="pending-exam-name">
+                        <i class="ri-file-list-3-line"></i> ${session.examName || '考试'}
+                    </div>
+                    <div class="countdown" id="pendingExamCountdown"></div>
+                    <div class="pending-exam-actions">
+                        <button class="btn btn-outline" onclick="endPendingExam()">
+                            稍后继续
+                        </button>
+                        <button class="btn btn-primary" onclick="continueExam()">
+                            <i class="ri-play-line"></i> 继续考试
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            if (session.expectedEndTime) {
+                updatePendingExamCountdown(session.expectedEndTime);
+            }
+        }
+        
+        function updatePendingExamCountdown(expectedEndTime) {
+            const countdownEl = document.getElementById('pendingExamCountdown');
+            if (!countdownEl) return;
+            
+            const updateTimer = () => {
+                const now = new Date();
+                const end = new Date(expectedEndTime);
+                const diff = end - now;
+                
+                if (diff <= 0) {
+                    countdownEl.textContent = '考试已超时';
+                    return;
+                }
+                
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                if (hours > 0) {
+                    countdownEl.textContent = `剩余时间: ${hours}小时${minutes}分${seconds}秒`;
+                } else if (minutes > 0) {
+                    countdownEl.textContent = `剩余时间: ${minutes}分${seconds}秒`;
+                } else {
+                    countdownEl.textContent = `剩余时间: ${seconds}秒`;
+                }
+            };
+            
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        }
+
+        async function continueExam() {
+            if (pendingExamSession && pendingExamSession.sessionToken) {
+                localStorage.setItem('sessionToken', pendingExamSession.sessionToken);
+                window.location.href = '/exam.html?examId=' + pendingExamSession.examId;
+            }
+        }
+
+        async function endPendingExam() {
+            if (confirm('确定要稍后继续吗？考试计时仍在继续，请尽快回来完成考试。')) {
+                document.getElementById('pendingExamAlert').remove();
+                pendingExamSession = null;
+            }
+        }
+
+        async function loadHomeData() {
+            const groupsResult = await fetchAPI('/groups/student/my-groups');
+            const groups = groupsResult?.data || [];
+            document.getElementById('statGroups').textContent = groups.length;
+
+            const recordsResult = await fetchAPI('/exam-record/student/my-records');
+            const records = recordsResult?.data || [];
+            document.getElementById('statCompletedExams').textContent = records.length;
+
+            if (records.length > 0) {
+                const totalScore = records.reduce((sum, r) => sum + (r.totalScore || 0), 0);
+                const totalMaxScore = records.reduce((sum, r) => sum + (r.maxScore || 0), 0);
+                const avgScore = totalMaxScore > 0 ? (totalScore / totalMaxScore) * 100 : 0;
+                document.getElementById('statAvgScore').textContent = avgScore.toFixed(1) + '%';
+            }
+
+            let pendingCount = 0;
+            let recentExams = [];
+            const completedExamIds = new Set(records.map(r => r.examId));
+
+            for (const group of groups) {
+                const examsResult = await fetchAPI(`/exam/group/${group.id}`);
+                if (examsResult?.data) {
+                    const availableExams = examsResult.data.filter(e => {
+                        if (completedExamIds.has(e.id)) return false;
+                        const now = new Date();
+                        const earliest = e.earliestStartTime ? new Date(e.earliestStartTime) : null;
+                        const latest = e.latestStartTime ? new Date(e.latestStartTime) : null;
+                        return (!earliest || now >= earliest) && (!latest || now <= latest);
+                    });
+                    pendingCount += availableExams.length;
+                    recentExams.push(...availableExams.map(e => ({...e, groupName: group.groupName})));
+                }
+            }
+
+            document.getElementById('statPendingExams').textContent = pendingCount;
+
+            if (recentExams.length > 0) {
+                recentExams.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                recentExams = recentExams.slice(0, 3);
+
+                document.getElementById('recentExams').innerHTML = recentExams.map(exam => `
+                    <div class="exam-card">
+                        <div class="exam-header">
+                            <div>
+                                <div class="exam-name">${exam.examName}</div>
+                                <div class="exam-group-name"><i class="ri-team-line"></i> ${exam.groupName}</div>
+                            </div>
+                            <span class="badge badge-orange">待参加</span>
+                        </div>
+                        <div class="exam-info">
+                            <div class="exam-info-item">
+                                <div class="exam-info-label">考试时长</div>
+                                <div class="exam-info-value">${exam.durationMinutes}分钟</div>
+                            </div>
+                            <div class="exam-info-item">
+                                <div class="exam-info-label">开始时间</div>
+                                <div class="exam-info-value">${formatDate(exam.earliestStartTime)}</div>
+                            </div>
+                            <div class="exam-info-item">
+                                <div class="exam-info-label">截止时间</div>
+                                <div class="exam-info-value">${formatDate(exam.latestStartTime)}</div>
+                            </div>
+                        </div>
+                        <div class="exam-actions">
+                            <button class="btn btn-primary" onclick="startExam(${exam.id})">
+                                <i class="ri-play-line"></i> 开始考试
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                document.getElementById('recentExams').innerHTML = `
+                    <div class="empty-state">
+                        <i class="ri-file-list-3-line"></i>
+                        <h3>暂无待参加的考试</h3>
+                        <p>加入组后，老师发布的考试会显示在这里</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function loadGroups() {
+            const result = await fetchAPI('/groups/student/my-groups');
+            const groups = result?.data || [];
+            console.log('Groups data:', groups);
+
+            if (groups.length > 0) {
+                document.getElementById('groupsList').innerHTML = `
+                    <div class="groups-grid">
+                        ${groups.map(group => `
+                            <div class="group-card" onclick="viewGroupExams(${group.id})">
+                                <div>
+                                    <div class="group-name" style="margin-bottom: 4px;">${group.groupName}</div>
+                                    <div class="group-teacher" style="font-size: 12px; margin-bottom: 8px;"><i class="ri-user-star-line"></i> ${group.teacherNickname || '教师'}</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);"><i class="ri-time-line"></i> 加入于 ${formatDate(group.joinedAt)}</div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                                    <span class="badge badge-green" style="font-size: 11px;">${group.memberCount || 0} 人</span>
+                                    <div style="display: flex; gap: 8px;">
+                                        <button class="btn btn-outline btn-sm" style="padding: 4px 8px; font-size: 11px;" onclick="event.stopPropagation(); viewGroupExams(${group.id})">
+                                            <i class="ri-file-list-3-line"></i> 考试
+                                        </button>
+                                        <button class="btn btn-outline btn-sm" style="padding: 4px 8px; font-size: 11px; color: var(--danger-color); border-color: var(--danger-color);" onclick="event.stopPropagation(); leaveGroup(${group.id})">
+                                            <i class="ri-logout-box-line"></i> 退出
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                document.getElementById('groupsList').innerHTML = `
+                    <div class="empty-state">
+                        <i class="ri-team-line"></i>
+                        <h3>还没有加入任何组</h3>
+                        <p>输入组码加入老师的考试组</p>
+                        <button class="btn btn-primary" style="margin-top: 16px;" onclick="showJoinGroupModal()">
+                            <i class="ri-add-line"></i> 加入组
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        function showJoinGroupModal() {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title">加入考试组</h3>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">输入6位组码</label>
+                            <input type="text" class="form-input" id="joinCode" maxlength="6" placeholder="请输入组码" style="text-align: center; font-size: 24px; letter-spacing: 8px; text-transform: uppercase;">
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-muted); text-align: center;">
+                            组码由6位数字或字母组成，请向您的老师获取
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="this.closest('.modal-overlay').remove()">取消</button>
+                        <button class="btn btn-primary" onclick="joinGroup()">加入</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        async function joinGroup() {
+            const code = document.getElementById('joinCode').value.trim().toUpperCase();
+            if (!code || code.length !== 6) {
+                showToast('请输入6位组码', 'error');
+                return;
+            }
+
+            const result = await fetchAPI('/groups/student/join', {
+                method: 'POST',
+                body: JSON.stringify({ groupCode: code })
+            });
+
+            if (result && result.success) {
+                showToast('成功加入组');
+                document.querySelector('.modal-overlay').remove();
+                loadGroups();
+                loadHomeData();
+            } else {
+                showToast(result?.message || '加入失败', 'error');
+            }
+        }
+
+        async function leaveGroup(groupId) {
+            if (!confirm('确定要退出这个组吗？退出后将无法参加该组的考试。')) {
+                return;
+            }
+
+            const result = await fetchAPI(`/groups/student/${groupId}/leave`, {
+                method: 'DELETE'
+            });
+
+            if (result && result.success) {
+                showToast('已退出组');
+                loadGroups();
+                loadHomeData();
+            } else {
+                showToast(result?.message || '退出失败', 'error');
+            }
+        }
+
+        async function viewGroupExams(groupId) {
+            showPage('exams');
+            loadExams(groupId);
+        }
+
+        let allExamsData = [];
+
+        async function loadExams(specificGroupId = null) {
+            let groups = [];
+
+            if (specificGroupId) {
+                const groupResult = await fetchAPI(`/groups/student/my-groups`);
+                const group = groupResult?.data?.find(g => g.id === specificGroupId);
+                if (group) groups = [group];
+            } else {
+                const groupsResult = await fetchAPI('/groups/student/my-groups');
+                groups = groupsResult?.data || [];
+            }
+
+            const groupSelect = document.getElementById('examGroupFilter');
+            groupSelect.innerHTML = '<option value="">全部组</option>' + 
+                groups.map(g => `<option value="${g.id}" ${specificGroupId === g.id ? 'selected' : ''}>${g.groupName}</option>`).join('');
+
+            const recordsResult = await fetchAPI('/exam-record/student/my-records');
+            const completedExamIds = new Set((recordsResult?.data || []).map(r => r.examId));
+
+            let exams = [];
+
+            for (const group of groups) {
+                const examsResult = await fetchAPI(`/exam/group/${group.id}`);
+                if (examsResult?.data) {
+                    exams.push(...examsResult.data.filter(e => !completedExamIds.has(e.id)).map(e => ({
+                        ...e,
+                        groupName: group.groupName,
+                        groupId: group.id
+                    })));
+                }
+            }
+
+            allExamsData = exams;
+
+            if (specificGroupId) {
+                document.getElementById('examGroupFilter').value = specificGroupId;
+            }
+
+            applyExamFilter();
+        }
+
+        function applyExamFilter() {
+            const groupId = document.getElementById('examGroupFilter').value;
+            const status = document.getElementById('examStatusFilter').value;
+            const now = new Date();
+
+            let filtered = [...allExamsData];
+
+            if (groupId) {
+                filtered = filtered.filter(e => e.groupId === parseInt(groupId));
+            }
+
+            if (status) {
+                filtered = filtered.filter(exam => {
+                    const earliest = exam.earliestStartTime ? new Date(exam.earliestStartTime) : null;
+                    const latest = exam.latestStartTime ? new Date(exam.latestStartTime) : null;
+                    const isAvailable = (!earliest || now >= earliest) && (!latest || now <= latest);
+                    const isExpired = latest && now > latest;
+                    const isNotStarted = earliest && now < earliest;
+
+                    if (status === 'available') return isAvailable;
+                    if (status === 'notStarted') return isNotStarted;
+                    if (status === 'expired') return isExpired;
+                    return true;
+                });
+            }
+
+            renderExams(filtered);
+        }
+
+        function clearExamFilter() {
+            document.getElementById('examGroupFilter').value = '';
+            document.getElementById('examStatusFilter').value = '';
+            applyExamFilter();
+        }
+
+        function renderExams(exams) {
+            if (exams.length > 0) {
+                document.getElementById('examsList').innerHTML = exams.map(exam => {
+                    const now = new Date();
+                    const earliest = exam.earliestStartTime ? new Date(exam.earliestStartTime) : null;
+                    const latest = exam.latestStartTime ? new Date(exam.latestStartTime) : null;
+                    const isAvailable = (!earliest || now >= earliest) && (!latest || now <= latest);
+                    const isExpired = latest && now > latest;
+                    const isNotStarted = earliest && now < earliest;
+
+                    let statusBadge = '';
+                    if (isExpired) {
+                        statusBadge = '<span class="badge badge-gray">已结束</span>';
+                    } else if (isNotStarted) {
+                        statusBadge = '<span class="badge badge-blue">未开始</span>';
+                    } else {
+                        statusBadge = '<span class="badge badge-orange">可参加</span>';
+                    }
+
+                    return `
+                        <div class="exam-card">
+                            <div class="exam-header">
+                                <div>
+                                    <div class="exam-name">${exam.examName}</div>
+                                    <div style="display: flex; gap: 16px; margin-top: 4px;">
+                                        <span class="exam-group-name"><i class="ri-team-line"></i> ${exam.groupName}</span>
+                                        ${exam.creatorName ? `<span class="exam-creator"><i class="ri-user-line"></i> 发布者：${exam.creatorName}</span>` : ''}
+                                    </div>
+                                </div>
+                                ${statusBadge}
+                            </div>
+                            <div class="exam-info">
+                                <div class="exam-info-item">
+                                    <div class="exam-info-label">考试时长</div>
+                                    <div class="exam-info-value">${exam.durationMinutes}分钟</div>
+                                </div>
+                                <div class="exam-info-item">
+                                    <div class="exam-info-label">开始时间</div>
+                                    <div class="exam-info-value">${formatDate(exam.earliestStartTime)}</div>
+                                </div>
+                                <div class="exam-info-item">
+                                    <div class="exam-info-label">截止时间</div>
+                                    <div class="exam-info-value">${formatDate(exam.latestStartTime)}</div>
+                                </div>
+                            </div>
+                            <div class="exam-actions">
+                                ${isAvailable ? `
+                                    <button class="btn btn-primary" onclick="startExam(${exam.id})">
+                                        <i class="ri-play-line"></i> 开始考试
+                                    </button>
+                                ` : isNotStarted ? `
+                                    <button class="btn btn-outline" disabled>
+                                        <i class="ri-time-line"></i> 未开始
+                                    </button>
+                                ` : `
+                                    <button class="btn btn-outline" disabled>
+                                        <i class="ri-time-line"></i> 已结束
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                document.getElementById('examsList').innerHTML = `
+                    <div class="empty-state">
+                        <i class="ri-file-list-3-line"></i>
+                        <h3>暂无考试</h3>
+                        <p>加入组后，老师发布的考试会显示在这里</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function startExam(examId) {
+            if (!confirm('确定要开始考试吗？开始后请认真作答。')) {
+                return;
+            }
+
+            const result = await fetchAPI(`/exam-session/start/${examId}`, {
+                method: 'POST'
+            });
+
+            if (result && result.success) {
+                localStorage.setItem('sessionToken', result.data.sessionToken);
+                window.location.href = `/exam.html?examId=${examId}`;
+            } else {
+                showToast(result?.message || '开始考试失败', 'error');
+            }
+        }
+
+        async function loadRecords() {
+            const result = await fetchAPI('/exam-record/student/my-records');
+            const records = result?.data || [];
+
+            if (records.length > 0) {
+                document.getElementById('recordsList').innerHTML = records.map(record => {
+                    const maxScore = record.maxScore || 100;
+                    const totalScore = record.totalScore || 0;
+                    const scorePercentage = maxScore > 0 ? (totalScore / maxScore) * 100 : 0;
+                    
+                    const scoreClass = scorePercentage >= 90 ? 'excellent' :
+                                      scorePercentage >= 75 ? 'good' :
+                                      scorePercentage >= 60 ? 'pass' : 'fail';
+
+                    const statusBadge = record.gradedAt ?
+                        '<span class="badge badge-green">已批改</span>' :
+                        '<span class="badge badge-orange">待批改</span>';
+
+                    return `
+                        <div class="record-card">
+                            <div class="record-header">
+                                <div>
+                                    <div class="record-name">${record.examName || '考试'} ${statusBadge}</div>
+                                    <div class="record-meta">
+                                        <span><i class="ri-team-line"></i> ${record.groupName || '-'}</span>
+                                        <span><i class="ri-user-line"></i> ${record.teacherName || '-'}</span>
+                                    </div>
+                                </div>
+                                <div class="record-score">
+                                    <div class="score-value ${scoreClass}">${totalScore?.toFixed(1) || '-'}</div>
+                                    <div class="score-label">/ ${maxScore?.toFixed(0) || '-'} 分</div>
+                                </div>
+                            </div>
+                            <div class="record-details">
+                                <div>
+                                    <div class="exam-info-label">得分率</div>
+                                    <div class="exam-info-value">${scorePercentage?.toFixed(1) || '-'}%</div>
+                                </div>
+                                <div>
+                                    <div class="exam-info-label">客观题得分</div>
+                                    <div class="exam-info-value">${record.objectiveScore?.toFixed(1) || '-'}</div>
+                                </div>
+                                <div>
+                                    <div class="exam-info-label">主观题得分</div>
+                                    <div class="exam-info-value">${record.subjectiveScore?.toFixed(1) || '-'}</div>
+                                </div>
+                                <div>
+                                    <div class="exam-info-label">考试时长</div>
+                                    <div class="exam-info-value">${record.scheduledDurationMinutes ? record.scheduledDurationMinutes + ' 分钟' : '-'}</div>
+                                </div>
+                                <div>
+                                    <div class="exam-info-label">实际用时</div>
+                                    <div class="exam-info-value">${record.examDurationMinutes ? record.examDurationMinutes + ' 分钟' : '-'}</div>
+                                </div>
+                                <div>
+                                    <div class="exam-info-label">提交时间</div>
+                                    <div class="exam-info-value">${formatDate(record.submittedAt)}</div>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 16px;">
+                                <button class="btn btn-primary btn-sm" onclick="viewRecordDetail(${record.sessionId})">
+                                    <i class="ri-eye-line"></i> 查看试卷
+                                </button>
+                                <button class="btn btn-outline btn-sm" onclick="showDeleteRecordModal(${record.id}, '${record.examName}')">
+                                    <i class="ri-delete-bin-line"></i> 删除记录
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                document.getElementById('recordsList').innerHTML = `
+                    <div class="empty-state">
+                        <i class="ri-history-line"></i>
+                        <h3>暂无考试记录</h3>
+                        <p>参加考试后，您的成绩会显示在这里</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function viewRecordDetail(sessionId) {
+            try {
+                const result = await fetchAPI(`/exam-score/student/${sessionId}/review`);
+                const review = result?.data;
+
+                if (!review) {
+                    showToast('试卷详情不可用，教师可能已删除该考试', 'error');
+                    return;
+                }
+
+                if (!review.questions || review.questions.length === 0) {
+                    showToast('试卷详情不可用，教师可能已删除该考试', 'warning');
+                    return;
+                }
+
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                <div class="modal xlarge">
+                    <div class="modal-header">
+                        <h3 class="modal-title">考试详情 - ${review.examName || '考试'}</h3>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; padding: 20px; background: var(--bg-color); border-radius: var(--radius);">
+                            <div style="text-align: center;">
+                                <div style="font-size: 28px; font-weight: 700; color: var(--primary-color);">${(() => {
+                                    if (review.totalScore !== null && review.totalScore !== undefined) {
+                                        return review.totalScore.toFixed(1);
+                                    }
+                                    if (review.questions) {
+                                        const total = review.questions.reduce((sum, q) => sum + (q.obtainedScore || 0), 0);
+                                        return total.toFixed(1);
+                                    }
+                                    return '-';
+                                })()}</div>
+                                <div style="font-size: 13px; color: var(--text-muted);">总得分</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 28px; font-weight: 700;">${review.maxScore?.toFixed(0) || '-'}</div>
+                                <div style="font-size: 13px; color: var(--text-muted);">满分</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 28px; font-weight: 700; color: var(--secondary-color);">${(() => {
+                                    if (review.objectiveScore !== null && review.objectiveScore !== undefined) {
+                                        return review.objectiveScore.toFixed(1);
+                                    }
+                                    if (review.questions) {
+                                        const objective = review.questions
+                                            .filter(q => q.questionType !== 'SHORT_ANSWER')
+                                            .reduce((sum, q) => sum + (q.obtainedScore || 0), 0);
+                                        return objective.toFixed(1);
+                                    }
+                                    return '0.0';
+                                })()}</div>
+                                <div style="font-size: 13px; color: var(--text-muted);">客观题得分</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 28px; font-weight: 700; color: var(--info-color);">${(() => {
+                                    if (review.subjectiveScore !== null && review.subjectiveScore !== undefined) {
+                                        return review.subjectiveScore.toFixed(1);
+                                    }
+                                    if (review.questions) {
+                                        const subjective = review.questions
+                                            .filter(q => q.questionType === 'SHORT_ANSWER')
+                                            .reduce((sum, q) => sum + (q.obtainedScore || 0), 0);
+                                        return subjective.toFixed(1);
+                                    }
+                                    return '0.0';
+                                })()}</div>
+                                <div style="font-size: 13px; color: var(--text-muted);">主观题得分</div>
+                            </div>
+                        </div>
+                        <div id="reviewQuestions">
+                            ${review.questions ? review.questions.map((q, i) => {
+                                const isGraded = review.totalScore !== null && review.totalScore !== undefined;
+                                const showCorrectAnswer = isGraded;
+                                
+                                return `
+                                <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 20px; margin-bottom: 16px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <span style="background: var(--primary-light); color: var(--primary-dark); padding: 4px 12px; border-radius: 12px; font-size: 13px; font-weight: 600;">第${i + 1}题</span>
+                                            <span class="badge badge-gray">${formatQuestionType(q.questionType)}</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            ${isGraded ? `
+                                            <div style="font-weight: 600; color: ${
+                                                q.obtainedScore >= q.questionScore ? 'var(--success-color)' : 
+                                                q.obtainedScore > 0 ? 'var(--warning-color)' : 'var(--danger-color)'
+                                            };">
+                                                ${q.obtainedScore?.toFixed(1) || 0} / ${q.questionScore?.toFixed(1) || 0} 分
+                                            </div>
+                                            <div style="font-size: 12px; color: ${
+                                                q.obtainedScore >= q.questionScore ? 'var(--success-color)' : 
+                                                q.obtainedScore > 0 ? 'var(--warning-color)' : 'var(--danger-color)'
+                                            };">
+                                                ${q.obtainedScore >= q.questionScore ? '✓ 正确' : 
+                                                  q.obtainedScore > 0 ? '◐ 半对' : '✗ 错误'}
+                                            </div>
+                                            ` : `
+                                            <div style="font-weight: 600; color: var(--text-muted);">
+                                                待批改
+                                            </div>
+                                            <div style="font-size: 12px; color: var(--text-muted);">
+                                                ${q.questionScore?.toFixed(1) || 0} 分
+                                            </div>
+                                            `}
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 15px; margin-bottom: 16px; line-height: 1.6;">${q.questionContent}</div>
+                                    ${q.options && q.options.length > 0 ? `
+                                        <div style="margin-bottom: 16px;">
+                                            ${q.options.map(opt => {
+                                                const isSelected = q.studentAnswer && q.studentAnswer.includes(opt.optionLabel);
+                                                const isCorrect = opt.isCorrect;
+                                                let bgColor = 'var(--bg-color)';
+                                                let borderColor = 'var(--border-color)';
+                                                let icon = '';
+                                                
+                                                if (isGraded) {
+                                                    if (isCorrect && isSelected) {
+                                                        bgColor = 'var(--primary-light)';
+                                                        borderColor = 'var(--primary-color)';
+                                                        icon = '<i class="ri-check-line" style="color: var(--success-color); margin-left: 8px;"></i>';
+                                                    } else if (isCorrect && !isSelected) {
+                                                        bgColor = 'var(--bg-color)';
+                                                        borderColor = 'var(--primary-color)';
+                                                        icon = '<i class="ri-check-line" style="color: var(--success-color); margin-left: 8px;"></i>';
+                                                    } else if (!isCorrect && isSelected) {
+                                                        bgColor = '#fee2e2';
+                                                        borderColor = 'var(--danger-color)';
+                                                        icon = '<i class="ri-close-line" style="color: var(--danger-color); margin-left: 8px;"></i>';
+                                                    }
+                                                } else {
+                                                    if (isSelected) {
+                                                        bgColor = 'var(--primary-light)';
+                                                        borderColor = 'var(--primary-color)';
+                                                    }
+                                                }
+                                                
+                                                return `
+                                                <div style="padding: 8px 12px; margin-bottom: 4px; border-radius: 6px; font-size: 14px; background: ${bgColor}; border: 1px solid ${borderColor};">
+                                                    <span style="font-weight: 600; margin-right: 8px;">${opt.optionLabel}.</span> ${opt.optionContent}
+                                                    ${icon}
+                                                </div>
+                                            `;
+                                            }).join('')}
+                                        </div>
+                                    ` : ''}
+                                    <div style="display: grid; grid-template-columns: 1fr ${showCorrectAnswer ? '1fr' : '0fr'}; gap: 16px; padding: 12px; background: var(--bg-color); border-radius: 6px;">
+                                        <div>
+                                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">您的答案</div>
+                                            <div style="font-size: 14px; color: var(--text-primary); font-weight: 500;">${q.studentAnswer || '-'}</div>
+                                        </div>
+                                        ${showCorrectAnswer ? `
+                                        <div>
+                                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 4px;">正确答案</div>
+                                            <div style="font-size: 14px; color: var(--success-color); font-weight: 500;">${q.correctAnswer || '-'}</div>
+                                        </div>
+                                        ` : ''}
+                                    </div>
+                                    ${q.analysis && isGraded ? `
+                                        <div style="margin-top: 12px; padding: 12px; background: #fffbeb; border-radius: 6px; border-left: 3px solid var(--secondary-color);">
+                                            <div style="font-size: 12px; color: var(--secondary-dark); margin-bottom: 4px;">解析</div>
+                                            <div style="font-size: 14px; color: var(--text-primary);">${q.analysis}</div>
+                                        </div>
+                                    ` : ''}
+                                </div>
+                            `;
+                            }).join('') : '<div class="empty-state"><p>暂无题目详情</p></div>'}
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" onclick="this.closest('.modal-overlay').remove()">关闭</button>
+                    </div>
+                </div>
+            `;
+                document.body.appendChild(modal);
+                setTimeout(() => modal.classList.add('active'), 10);
+            } catch (error) {
+                console.error('获取试卷详情失败:', error);
+                showToast('获取试卷详情失败', 'error');
+            }
+        }
+
+        function showDeleteRecordModal(recordId, examName) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title" style="color: var(--danger-color);">删除考试记录</h3>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center; padding: 20px 0;">
+                            <i class="ri-error-warning-line" style="font-size: 48px; color: var(--danger-color); margin-bottom: 16px;"></i>
+                            <h3 style="margin-bottom: 12px;">确定要删除此记录吗？</h3>
+                            <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+                                考试名称：<strong>${examName}</strong><br><br>
+                                删除后，您的试卷详情仍会保留，但此记录将从列表中移除。<br>
+                                <strong style="color: var(--danger-color);">此操作不可恢复！</strong>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="this.closest('.modal-overlay').remove()">取消</button>
+                        <button class="btn btn-danger" onclick="deleteExamRecord(${recordId})">确认删除</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        async function deleteExamRecord(recordId) {
+            try {
+                const result = await fetchAPI(`/exam-record/student/${recordId}`, {
+                    method: 'DELETE'
+                });
+
+                if (result && result.success) {
+                    showToast('记录已删除');
+                    // 关闭弹窗
+                    document.querySelectorAll('.modal-overlay').forEach(m => m.remove());
+                    // 重新加载记录列表
+                    await loadRecords();
+                    // 重新加载个人资料（更新平均分）
+                    await loadProfile();
+                } else {
+                    showToast(result?.message || '删除失败', 'error');
+                }
+            } catch (error) {
+                console.error('删除记录失败:', error);
+                showToast('删除失败', 'error');
+            }
+        }
+
+        async function loadProfile() {
+            const result = await fetchAPI('/users/me');
+            const user = result?.data;
+
+            if (user) {
+                currentUser = user;
+                document.getElementById('viewUsername').textContent = user.username || '-';
+                document.getElementById('viewNickname').textContent = user.nickname || '-';
+                document.getElementById('viewStudentId').textContent = user.studentStaffId || '-';
+                
+                document.getElementById('profileUsername').value = user.username || '';
+                document.getElementById('profileNickname').value = user.nickname || '';
+                document.getElementById('profileStudentId').value = user.studentStaffId || '';
+            }
+
+            const groupsResult = await fetchAPI('/groups/student/my-groups');
+            const groups = groupsResult?.data || [];
+            document.getElementById('profileGroupCount').textContent = groups.length;
+
+            const recordsResult = await fetchAPI('/exam-record/student/my-records');
+            const records = recordsResult?.data || [];
+            const completedRecords = records.filter(r => r.status === 'GRADED' || r.status === 'SUBMITTED');
+            document.getElementById('profileExamCount').textContent = completedRecords.length;
+
+            if (completedRecords.length > 0) {
+                const totalScore = completedRecords.reduce((sum, r) => sum + (r.totalScore || 0), 0);
+                const totalMaxScore = completedRecords.reduce((sum, r) => sum + (r.maxScore || 0), 0);
+                const avgScore = totalMaxScore > 0 ? (totalScore / totalMaxScore) * 100 : 0;
+                document.getElementById('profileAvgScore').textContent = avgScore.toFixed(1) + '%';
+            }
+        }
+
+        function toggleEditMode() {
+            const viewMode = document.getElementById('profileViewMode');
+            const editMode = document.getElementById('profileEditMode');
+            const editBtn = document.getElementById('editProfileBtn');
+            
+            if (viewMode.style.display !== 'none') {
+                viewMode.style.display = 'none';
+                editMode.style.display = 'block';
+                editBtn.innerHTML = '<i class="ri-close-line"></i> 取消';
+            } else {
+                viewMode.style.display = 'block';
+                editMode.style.display = 'none';
+                editBtn.innerHTML = '<i class="ri-edit-line"></i> 修改';
+            }
+        }
+
+        function cancelEdit() {
+            document.getElementById('profileViewMode').style.display = 'block';
+            document.getElementById('profileEditMode').style.display = 'none';
+            document.getElementById('editProfileBtn').innerHTML = '<i class="ri-edit-line"></i> 修改';
+            // 恢复原始数据
+            loadProfile();
+        }
+
+        async function updateProfile() {
+            const nickname = document.getElementById('profileNickname').value.trim();
+            const studentId = document.getElementById('profileStudentId').value.trim();
+
+            const result = await fetchAPI('/student/profile', {
+                method: 'PUT',
+                body: JSON.stringify({
+                    nickname,
+                    studentStaffId: studentId
+                })
+            });
+
+            if (result && result.success) {
+                showToast('保存成功');
+                const displayName = nickname || currentUser?.username || '学生';
+                document.getElementById('userName').textContent = displayName;
+                document.getElementById('userAvatar').textContent = displayName[0];
+                document.getElementById('viewNickname').textContent = nickname || '-';
+                document.getElementById('viewStudentId').textContent = studentId || '-';
+                toggleEditMode();
+            } else {
+                showToast(result?.message || '保存失败', 'error');
+            }
+        }
+
+        function showChangePasswordModal() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.remove());
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.id = 'changePasswordModal';
+            modal.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title"><i class="ri-lock-password-line"></i> 修改密码</h3>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="form-label">原密码</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" class="form-input" id="changePasswordCurrent" placeholder="请输入原密码" data-regex="[^a-zA-Z0-9!@#$%^&*?]">
+                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('changePasswordCurrent', this)">
+                                    <svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">新密码</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" class="form-input" id="changePasswordNew" placeholder="请输入新密码(6-24位，仅支持字母、数字和!@#$%^&*?符号)" oninput="validatePasswordInput(this)" maxlength="24">
+                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('changePasswordNew', this)">
+                                    <svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">确认新密码</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" class="form-input" id="changePasswordConfirm" placeholder="请再次输入新密码" oninput="validatePasswordInput(this)">
+                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('changePasswordConfirm', this)">
+                                    <svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                            <i class="ri-information-line"></i> 密码只能包含字母、数字和符号 !@#$%^&*?
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="this.closest('.modal-overlay').remove()">取消</button>
+                        <button class="btn btn-primary" onclick="changePassword()">确认修改</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function validatePasswordInput(input) {
+            const allowedSymbols = '!@#$%^&*?';
+            let value = input.value;
+            let filteredValue = '';
+
+            for (let i = 0; i < value.length; i++) {
+                const char = value[i];
+                if (/[\u4e00-\u9fa5]/.test(char)) continue;
+                if (char !== ' ' && (/[a-zA-Z0-9]/.test(char) || allowedSymbols.includes(char))) {
+                    filteredValue += char;
+                }
+            }
+
+            input.value = filteredValue;
+        }
+
+        function validateNicknameInput(input) {
+            let value = input.value;
+            let filteredValue = '';
+
+            for (let i = 0; i < value.length; i++) {
+                const char = value[i];
+                if (/[\u4e00-\u9fa5a-zA-Z0-9]/.test(char)) {
+                    filteredValue += char;
+                }
+            }
+
+            input.value = filteredValue;
+        }
+
+        function validateStudentIdInput(input) {
+            let value = input.value;
+            let filteredValue = '';
+
+            for (let i = 0; i < value.length; i++) {
+                const char = value[i];
+                if (/[a-zA-Z0-9]/.test(char)) {
+                    filteredValue += char;
+                }
+            }
+
+            input.value = filteredValue;
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
+            }
+        }
+
+        async function changePassword() {
+            const currentPassword = document.getElementById('changePasswordCurrent').value;
+            const newPassword = document.getElementById('changePasswordNew').value;
+            const confirmPassword = document.getElementById('changePasswordConfirm').value;
+
+            if (!currentPassword) {
+                showToast('请输入原密码', 'error');
+                return;
+            }
+
+            if (!newPassword) {
+                showToast('请输入新密码', 'error');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showToast('两次输入的新密码不一致', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showToast('新密码长度不能少于6位', 'error');
+                return;
+            }
+
+            if (newPassword.length > 24) {
+                showToast('新密码长度不能超过24位', 'error');
+                return;
+            }
+
+            const result = await fetchAPI('/users/change-password', {
+                method: 'POST',
+                body: JSON.stringify({
+                    currentPassword: currentPassword,
+                    newPassword: newPassword
+                })
+            });
+
+            if (result && result.success) {
+                showToast('密码修改成功，即将退出登录...');
+                document.querySelector('.modal-overlay').remove();
+                setTimeout(() => {
+                    localStorage.removeItem('jwt_token');
+                    localStorage.removeItem('user_role');
+                    window.location.href = '/log.html';
+                }, 1500);
+            } else {
+                showToast(result?.message || '密码修改失败', 'error');
+            }
+        }
+
+        function showDeleteAccountModal() {
+            // 关闭所有已存在的弹窗
+            document.querySelectorAll('.modal-overlay').forEach(m => m.remove());
+            
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.id = 'deleteAccountModal';
+            modal.innerHTML = `
+                <div class="modal">
+                    <div class="modal-header">
+                        <h3 class="modal-title" style="color: var(--danger-color);">注销账号</h3>
+                        <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="text-align: center; padding: 20px 0;">
+                            <i class="ri-error-warning-line" style="font-size: 64px; color: var(--danger-color); margin-bottom: 16px;"></i>
+                            <h3 style="margin-bottom: 12px;">确定要注销账号吗？</h3>
+                            <p style="color: var(--text-secondary); font-size: 14px; line-height: 1.8;">
+                                此操作将永久删除您的账号和所有相关数据，包括：<br>
+                                • 考试记录和成绩<br>
+                                • 加入的考试组<br>
+                                • 个人信息<br>
+                                <br>
+                                <strong style="color: var(--danger-color);">此操作不可恢复！</strong>
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">请输入您的账号名：</label>
+                            <input type="text" class="form-input" id="confirmUsername" placeholder="请输入您的账号名">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">请输入您的密码：</label>
+                            <div class="password-input-wrapper">
+                                <input type="password" class="form-input" id="confirmPassword" placeholder="请输入您的密码" data-regex="[^a-zA-Z0-9!@#$%^&*?]">
+                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('confirmPassword', this)">
+                                    <svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline" onclick="this.closest('.modal-overlay').remove()">取消</button>
+                        <button class="btn btn-danger" id="confirmDeleteBtn" disabled onclick="deleteAccount()">
+                            <span id="countdownText">确认注销 (10)</span>
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            setTimeout(() => modal.classList.add('active'), 10);
+            
+            // 启动10秒倒计时
+            startDeleteCountdown();
+        }
+
+        let deleteCountdownTimer = null;
+        
+        function startDeleteCountdown() {
+            let countdown = 10;
+            const countdownText = document.getElementById('countdownText');
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            
+            if (deleteCountdownTimer) {
+                clearInterval(deleteCountdownTimer);
+            }
+            
+            confirmBtn.disabled = true;
+            countdownText.textContent = `确认注销 (${countdown})`;
+            
+            deleteCountdownTimer = setInterval(() => {
+                countdown--;
+                if (countdown > 0) {
+                    countdownText.textContent = `确认注销 (${countdown})`;
+                } else {
+                    clearInterval(deleteCountdownTimer);
+                    countdownText.textContent = '确认注销';
+                    confirmBtn.disabled = false;
+                }
+            }, 1000);
+        }
+
+        async function deleteAccount() {
+            const confirmUsername = document.getElementById('confirmUsername').value.trim();
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (confirmUsername !== currentUser?.username) {
+                showToast('账号名输入不正确', 'error');
+                return;
+            }
+
+            if (!confirmPassword) {
+                showToast('请输入密码', 'error');
+                return;
+            }
+
+            const result = await fetchAPI('/users/delete-account', {
+                method: 'DELETE',
+                body: JSON.stringify({
+                    username: confirmUsername,
+                    password: confirmPassword
+                })
+            });
+
+            if (result && result.success) {
+                showToast('账号已注销');
+                localStorage.removeItem('jwt_token');
+                localStorage.removeItem('user_role');
+                setTimeout(() => {
+                    window.location.href = '/log.html';
+                }, 1500);
+            } else {
+                showToast(result?.message || '注销失败', 'error');
+            }
+        }
+
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                localStorage.removeItem('jwt_token');
+                localStorage.removeItem('user_role');
+                window.location.href = '/log.html';
+            }
+        }
+
+        let studentIsComposing = false;
+        let studentDebounceTimer = null;
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            document.querySelectorAll('input[data-regex]').forEach(function(input) {
+                var regex = new RegExp(input.dataset.regex, 'g');
+
+                input.addEventListener('compositionstart', function() {
+                    studentIsComposing = true;
+                });
+
+                input.addEventListener('compositionend', function() {
+                    studentIsComposing = false;
+                    input.value = input.value.replace(regex, '');
+                });
+
+                input.addEventListener('input', function() {
+                    if (!studentIsComposing) {
+                        clearTimeout(studentDebounceTimer);
+                        var currentInput = input;
+                        studentDebounceTimer = setTimeout(function() {
+                            currentInput.value = currentInput.value.replace(regex, '');
+                        }, 300);
+                    }
+                });
+            });
+
+            const userInitialized = await initUser();
+            if (!userInitialized) return;
+
+            const hasPendingExam = await checkPendingExam();
+
+            if (!hasPendingExam) {
+                loadHomeData();
+            }
+        });
+    </script>
+</body>
+</html>

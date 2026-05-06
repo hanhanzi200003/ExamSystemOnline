@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注册 - hanhanzi 考试平台</title>
+  <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .register-container {
+            width: 90%;
+            max-width: 500px;
+            min-width: 350px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px 35px;
+            position: relative;
+            margin: 20px auto;
+        }
+
+        .back-arrow {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            z-index: 10;
+        }
+
+        .register-title {
+            text-align: center;
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        .role-switcher {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .role-tab {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0 5px;
+            background: #f8f9fa;
+            font-weight: 500;
+        }
+
+        .role-tab.active {
+            background: linear-gradient(135deg, #7eb8da 0%, #5ba3c9 100%);
+            color: #1a4a6e;
+            border-color: #5ba3c9;
+            box-shadow: 0 4px 15px rgba(91, 163, 201, 0.3);
+        }
+
+        .role-tab:hover:not(.active) {
+            border-color: #5ba3c9;
+            background: #d4ebf5;
+        }
+
+        .tab-switcher {
+            display: flex;
+            width: 100%;
+            margin-bottom: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 25px;
+            overflow: hidden;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            color: #333 !important;
+            background-color: #f8f9fa !important;
+            border: none !important;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #7eb8da 0%, #5ba3c9 100%) !important;
+            color: #1a4a6e !important;
+        }
+
+        .tab-btn:hover:not(.active) {
+            background-color: #d4ebf5 !important;
+            color: #1a4a6e !important;
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            color: gray;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+
+        .input-with-select {
+            display: flex;
+        }
+
+        .input-with-select input {
+            flex: 1;
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-with-select select {
+            margin-left: 10px;
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        input[type="text"], input[type="password"], input[type="tel"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input::-ms-reveal,
+        input::-webkit-credentials-auto-fill-button,
+        input::-webkit-caps-lock-indicator {
+            display: none;
+        }
+
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .password-wrapper input {
+            padding-right: 40px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            font-size: 18px;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+        }
+
+        .password-toggle:hover {
+            color: #3d8ab5;
+        }
+
+        .password-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        input:focus {
+            border-color: #5ba3c9;
+        }
+
+        .password-strength {
+            height: 5px;
+            background: #eee;
+            border-radius: 3px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+
+        .strength-weak { background: #ff4757; width: 33%; }
+        .strength-medium { background: #ffa502; width: 66%; }
+        .strength-strong { background: #2ed573; width: 100%; }
+
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #7eb8da 0%, #5ba3c9 100%);
+            color: #1a4a6e;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .register-btn:hover {
+            background: linear-gradient(135deg, #5ba3c9 0%, #3d8ab5 100%);
+        }
+
+        .agreement {
+            text-align: center;
+            margin-top: 20px;
+            color: gray;
+            font-size: 13px;
+        }
+
+        .agreement a {
+            color: #3d8ab5;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+
+            .register-container {
+                width: 95%;
+                padding: 30px 20px;
+                margin: 10px auto;
+            }
+
+            .back-arrow {
+                top: 15px;
+                left: 15px;
+            }
+
+            .register-title {
+                font-size: 20px;
+                margin-top: 15px;
+            }
+
+            .role-selector {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .role-btn {
+                margin: 0;
+            }
+
+            .input-group input,
+            .input-group select {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .register-container {
+                width: 98%;
+                border-radius: 10px;
+            }
+
+            .tab-switcher {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                border-bottom: 1px solid #e0e0e0;
+            }
+
+            .tab-btn:last-child {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="register-container">
+  <div class="back-arrow" onclick="goBack()">&larr;</div>
+
+  <div class="register-title">新用户注册</div>
+
+  <div class="role-switcher">
+    <div class="role-tab active" onclick="switchRole('student')">🎓 学生注册</div>
+    <div class="role-tab" onclick="switchRole('teacher')">👨‍🏫 教师注册</div>
+  </div>
+
+  <div class="tab-switcher">
+    <div class="tab-btn active" onclick="switchRegTab('phone')">手机号注册</div>
+    <div class="tab-btn" onclick="switchRegTab('email')">邮箱注册</div>
+  </div>
+
+  <!-- 手机注册表单 -->
+  <div id="phone-reg-form" class="form-container active">
+    <div class="input-group">
+      <label>手机号</label>
+      <input type="tel" id="reg-phone" placeholder="请输入手机号码" maxlength="11" data-regex="[^0-9]">
+    </div>
+
+    <div class="input-group">
+      <label>学工号</label>
+      <input type="text" id="reg-student-staff-id" placeholder="请输入学工号" maxlength="12" data-regex="[^A-Za-z0-9]">
+    </div>
+
+    <div class="input-group">
+      <label>姓名</label>
+      <input type="text" id="reg-nickname" placeholder="请输入姓名" maxlength="20" onblur="this.value = this.value.replace(/[^\u4e00-\u9fa5A-Za-z0-9]/g, '')">
+    </div>
+
+    <div class="input-group" id="phone-teacher-code-group" style="display: none;">
+      <label>教师注册码</label>
+      <input type="text" id="reg-teacher-code" placeholder="请输入教师注册码" maxlength="6" data-regex="[^0-9]">
+    </div>
+
+    <div class="input-group">
+      <label>密码</label>
+      <div class="password-wrapper">
+        <input type="password" id="reg-password" placeholder="请输入密码(6-24位，支持字母、数字和!@#$%^&*?符号)" maxlength="24" data-regex="[^a-zA-Z0-9!@#$%^&*?]">
+        <span class="password-toggle" onclick="togglePassword('reg-password', this)"><svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg></span>
+      </div>
+      <div class="password-strength">
+        <div class="strength-bar" id="strength-bar"></div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>确认密码</label>
+      <div class="password-wrapper">
+        <input type="password" id="confirm-password" placeholder="请再次输入密码" maxlength="24" data-regex="[^a-zA-Z0-9!@#$%^&*?]">
+        <span class="password-toggle" onclick="togglePassword('confirm-password', this)"><svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg></span>
+      </div>
+    </div>
+
+    <button class="register-btn" onclick="register('phone')">注册</button>
+  </div>
+
+  <!-- 邮箱注册表单 -->
+  <div id="email-reg-form" class="form-container">
+    <div class="input-group">
+      <label>邮箱</label>
+      <div class="input-with-select">
+        <input type="text" id="reg-email" placeholder="请输入邮箱" data-regex="[^a-zA-Z0-9@._-]">
+        <select id="reg-email-domain">
+          <option value="@qq.com">@qq.com</option>
+          <option value="@163.com">@163.com</option>
+          <option value="@outlook.com">@outlook.com</option>
+          <option value="@sina.com">@sina.com</option>
+          <option value="@gmail.com">@gmail.com</option>
+          <option value="@aliyun.com">@aliyun.com</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>学工号</label>
+      <input type="text" id="reg-email-student-staff-id" placeholder="请输入学工号" maxlength="12" data-regex="[^A-Za-z0-9]">
+    </div>
+
+    <div class="input-group">
+      <label>姓名</label>
+      <input type="text" id="reg-email-nickname" placeholder="请输入姓名" maxlength="20" onblur="this.value = this.value.replace(/[^\u4e00-\u9fa5A-Za-z0-9]/g, '')">
+    </div>
+
+    <div class="input-group" id="email-teacher-code-group" style="display: none;">
+      <label>教师注册码</label>
+      <input type="text" id="reg-email-teacher-code" placeholder="请输入教师注册码" maxlength="6" data-regex="[^0-9]">
+    </div>
+
+    <div class="input-group">
+      <label>密码</label>
+      <div class="password-wrapper">
+        <input type="password" id="reg-email-password" placeholder="请输入密码(6-24位，支持字母、数字和!@#$%^&*?符号)" maxlength="24" data-regex="[^a-zA-Z0-9!@#$%^&*?]">
+        <span class="password-toggle" onclick="togglePassword('reg-email-password', this)"><svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg></span>
+      </div>
+      <div class="password-strength">
+        <div class="strength-bar" id="email-strength-bar"></div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>确认密码</label>
+      <div class="password-wrapper">
+        <input type="password" id="confirm-email-password" placeholder="请再次输入密码" maxlength="24" data-regex="[^a-zA-Z0-9!@#$%^&*?]">
+        <span class="password-toggle" onclick="togglePassword('confirm-email-password', this)"><svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg></span>
+      </div>
+    </div>
+
+    <button class="register-btn" onclick="register('email')">注册</button>
+  </div>
+
+  <div class="agreement">
+    我已阅读并同意考试系统<a href="#" onclick="showAgreement()">《用户协议》</a>
+  </div>
+</div>
+
+<!-- 用户协议模态框 -->
+<div id="agreementModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="hideAgreement()">&times;</span>
+    <h3>用户协议</h3>
+    <p>没有协议</p>
+  </div>
+</div>
+
+<script>
+        let isComposing = false;
+        let debounceTimer = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('input[data-regex]').forEach(function(input) {
+                var regex = new RegExp(input.dataset.regex, 'g');
+
+                input.addEventListener('compositionstart', function() {
+                    isComposing = true;
+                });
+
+                input.addEventListener('compositionend', function() {
+                    isComposing = false;
+                    input.value = input.value.replace(regex, '');
+                    if (input.id === 'reg-password') {
+                        checkPasswordStrength(input.value, 'strength-bar');
+                    } else if (input.id === 'reg-email-password') {
+                        checkPasswordStrength(input.value, 'email-strength-bar');
+                    }
+                });
+
+                input.addEventListener('input', function() {
+                    if (!isComposing) {
+                        clearTimeout(debounceTimer);
+                        var currentInput = input;
+                        debounceTimer = setTimeout(function() {
+                            currentInput.value = currentInput.value.replace(regex, '');
+                            if (currentInput.id === 'reg-password') {
+                                checkPasswordStrength(currentInput.value, 'strength-bar');
+                            } else if (currentInput.id === 'reg-email-password') {
+                                checkPasswordStrength(currentInput.value, 'email-strength-bar');
+                            }
+                        }, 300);
+                    }
+                });
+            });
+
+            var regPassword = document.getElementById('reg-password');
+            if (regPassword) {
+                regPassword.addEventListener('input', function() {
+                    checkPasswordStrength(this.value, 'strength-bar');
+                });
+            }
+
+            var regEmailPassword = document.getElementById('reg-email-password');
+            if (regEmailPassword) {
+                regEmailPassword.addEventListener('input', function() {
+                    checkPasswordStrength(this.value, 'email-strength-bar');
+                });
+            }
+        });
+
+        function togglePassword(inputId, toggleBtn) {
+            var input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                toggleBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
+            } else {
+                input.type = 'password';
+                toggleBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
+            }
+        }
+
+        function goBack() {
+            window.location.href = '/log.html';
+        }
+
+        let currentRole = 'STUDENT';
+
+        function switchRole(role) {
+            currentRole = role === 'student' ? 'STUDENT' : 'TEACHER';
+
+            document.querySelectorAll('.role-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const phoneTeacherCodeGroup = document.getElementById('phone-teacher-code-group');
+            const emailTeacherCodeGroup = document.getElementById('email-teacher-code-group');
+
+            if (currentRole === 'TEACHER') {
+                phoneTeacherCodeGroup.style.display = 'block';
+                emailTeacherCodeGroup.style.display = 'block';
+            } else {
+                phoneTeacherCodeGroup.style.display = 'none';
+                emailTeacherCodeGroup.style.display = 'none';
+            }
+        }
+
+        function switchRegTab(tabType) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.form-container').forEach(form => form.classList.remove('active'));
+            document.getElementById(`${tabType}-reg-form`).classList.add('active');
+        }
+
+        function validatePassword(input) {
+            const allowedSymbols = '!@#$%^&*?';
+            let value = input.value;
+            let filteredValue = '';
+
+            for (let i = 0; i < value.length; i++) {
+                const char = value[i];
+                if (/[\u4e00-\u9fa5]/.test(char)) continue;
+                if (char !== ' ' && (/[a-zA-Z0-9]/.test(char) || allowedSymbols.includes(char))) {
+                    filteredValue += char;
+                }
+            }
+
+            input.value = filteredValue;
+        }
+
+        function checkPasswordStrength(password, targetId) {
+            var strengthBar = document.getElementById(targetId);
+            if (!strengthBar) return;
+
+            strengthBar.className = 'strength-bar';
+
+            if (!password || password.length === 0) {
+                strengthBar.style.width = '0%';
+                strengthBar.style.background = '#eee';
+                return;
+            }
+
+            var combinations = 0;
+            if (/[a-z]/.test(password)) combinations++;
+            if (/[A-Z]/.test(password)) combinations++;
+            if (/[0-9]/.test(password)) combinations++;
+            if (/[!@#$%^&*?]/.test(password)) combinations++;
+
+            if (combinations <= 1) {
+                strengthBar.style.width = '33%';
+                strengthBar.style.background = '#ff4757';
+            } else if (combinations === 2) {
+                strengthBar.style.width = '66%';
+                strengthBar.style.background = '#ffa502';
+            } else if (combinations >= 3) {
+                strengthBar.style.width = '100%';
+                strengthBar.style.background = '#2ed573';
+            }
+        }
+
+        function showMessage(message, isError = false) {
+            const messageEl = document.createElement('div');
+            messageEl.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 15px 25px;
+                border-radius: 8px;
+                color: white;
+                font-weight: 500;
+                z-index: 1000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                ${isError ? 'background: #ff4757;' : 'background: #2ed573;'}
+            `;
+            messageEl.textContent = message;
+
+            document.body.appendChild(messageEl);
+
+            setTimeout(() => {
+                if (messageEl.parentNode) {
+                    messageEl.parentNode.removeChild(messageEl);
+                }
+            }, 3000);
+        }
+
+        async function register(regType) {
+            const role = currentRole;
+
+            let registrationData = {
+                registrationType: regType.toUpperCase(),
+                role: role,
+                password: ''
+            };
+
+            if (role === 'TEACHER') {
+                const teacherCodeInput = regType === 'phone' ? 
+                    document.getElementById('reg-teacher-code') : 
+                    document.getElementById('reg-email-teacher-code');
+                const teacherCode = teacherCodeInput.value;
+                
+                if (!teacherCode || teacherCode.length !== 6) {
+                    showMessage('请输入教师注册码！', true);
+                    return;
+                }
+                registrationData.teacherRegisterCode = teacherCode;
+            }
+
+            if (regType === 'phone') {
+                const phone = document.getElementById('reg-phone').value;
+                const studentStaffId = document.getElementById('reg-student-staff-id').value;
+                const nickname = document.getElementById('reg-nickname').value;
+                const password = document.getElementById('reg-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+
+                if (!phone || phone.length !== 11) {
+                    showMessage('请输入正确的手机号码', true);
+                    return;
+                }
+                if (!studentStaffId || studentStaffId.trim().length === 0) {
+                    showMessage('学工号不能为空', true);
+                    return;
+                }
+                if (!nickname || nickname.trim().length === 0) {
+                    showMessage('姓名不能为空', true);
+                    return;
+                }
+                
+                let filteredPassword = password.replace(/[\u4e00-\u9fa5]/g, '');
+                if (!filteredPassword) {
+                    showMessage('密码不能为空', true);
+                    return;
+                }
+                if (filteredPassword.length < 6) {
+                    showMessage('密码长度不能少于6位', true);
+                    return;
+                }
+                if (filteredPassword.length > 24) {
+                    showMessage('密码长度不能超过24位', true);
+                    return;
+                }
+                if (filteredPassword !== confirmPassword.replace(/[\u4e00-\u9fa5]/g, '')) {
+                    showMessage('两次输入的密码不一致', true);
+                    return;
+                }
+
+                registrationData.phone = phone;
+                registrationData.studentStaffId = studentStaffId.trim();
+                registrationData.nickname = nickname.trim();
+                registrationData.password = filteredPassword;
+            } else if (regType === 'email') {
+                const emailPrefix = document.getElementById('reg-email').value;
+                const domain = document.getElementById('reg-email-domain').value;
+                const email = emailPrefix + domain;
+                const studentStaffId = document.getElementById('reg-email-student-staff-id').value;
+                const nickname = document.getElementById('reg-email-nickname').value;
+                const password = document.getElementById('reg-email-password').value;
+                const confirmPassword = document.getElementById('confirm-email-password').value;
+
+                if (!emailPrefix) {
+                    showMessage('请输入邮箱前缀', true);
+                    return;
+                }
+                if (!studentStaffId || studentStaffId.trim().length === 0) {
+                    showMessage('学工号不能为空', true);
+                    return;
+                }
+                if (!nickname || nickname.trim().length === 0) {
+                    showMessage('姓名不能为空', true);
+                    return;
+                }
+                
+                let filteredPassword = password.replace(/[\u4e00-\u9fa5]/g, '');
+                if (!filteredPassword) {
+                    showMessage('密码不能为空', true);
+                    return;
+                }
+                if (filteredPassword.length < 6) {
+                    showMessage('密码长度不能少于6位', true);
+                    return;
+                }
+                if (filteredPassword.length > 24) {
+                    showMessage('密码长度不能超过24位', true);
+                    return;
+                }
+                if (filteredPassword !== confirmPassword.replace(/[\u4e00-\u9fa5]/g, '')) {
+                    showMessage('两次输入的密码不一致', true);
+                    return;
+                }
+
+                registrationData.email = email;
+                registrationData.studentStaffId = studentStaffId.trim();
+                registrationData.nickname = nickname.trim();
+                registrationData.password = filteredPassword;
+            }
+
+            const registerBtn = event.target;
+            const originalText = registerBtn.textContent;
+            registerBtn.disabled = true;
+            registerBtn.textContent = '注册中...';
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(registrationData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('注册成功！请登录您的账号');
+
+                    setTimeout(() => {
+                        window.location.href = '/log.html';
+                    }, 1500);
+                } else {
+                    showMessage(result.message || '注册失败', true);
+                }
+            } catch (error) {
+                console.error('注册请求失败:', error);
+                showMessage('网络错误，请稍后重试', true);
+            } finally {
+                registerBtn.disabled = false;
+                registerBtn.textContent = originalText;
+            }
+        }
+
+        function showAgreement() {
+            document.getElementById('agreementModal').style.display = 'block';
+        }
+
+        function hideAgreement() {
+            document.getElementById('agreementModal').style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('agreementModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
