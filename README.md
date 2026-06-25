@@ -12,15 +12,18 @@ Spring Boot 3 构建的在线考试平台，支持教师出题组卷、学生在
 |------|------|------|
 | Java | 17 | 运行环境 |
 | Spring Boot | 3.3.5 | 应用框架 |
-| Spring Security | 6.x | 认证授权 (JWT + RBAC) |
-| Spring Data JPA | 3.x | ORM / 数据持久层 |
-| MySQL | 8.x | 关系型数据库 |
-| Redis | 7.x | 考试会话缓存 |
-| JWT (jjwt) | 0.11.5 | 无状态令牌认证 |
+| Spring Security | 6.3.4 | 认证授权 (JWT + RBAC) |
+| Spring Data JPA | 3.3.5 | ORM / 数据持久层 |
+| MySQL | 8.0.33 | 关系型数据库 |
+| Redis | 7.2.4 | 考试会话答案缓存 |
+| jjwt | 0.11.5 | 无状态 JWT 令牌认证 |
 | Apache POI | 5.2.3 | Excel 成绩导出 |
-| SpringDoc OpenAPI | 2.3.0 | Swagger 接口文档 |
-| HikariCP | 5.x | 数据库连接池 |
-| Lombok | - | 编译期代码生成 |
+| SpringDoc OpenAPI | 2.3.0 | Swagger 接口文档自动生成 |
+| HikariCP | 5.1.0 | 数据库连接池 |
+| Lombok | 1.18.34 | 编译期代码生成 |
+| Fastjson2 | 2.0.48 | JSON 序列化与反序列化 |
+| EasyCaptcha | 1.6.2 | 登录图形验证码生成 |
+| Commons Lang3 | 3.14.0 | 通用工具类库 |
 
 ### 前端
 
@@ -200,10 +203,10 @@ src/main/java/com/example/exam_system/
 
 ### 环境要求
 
-- JDK 17+
-- Maven 3.8+
-- MySQL 8.0+
-- Redis 7.0+
+- JDK 17.0.8
+- Maven 3.9.5
+- MySQL 8.0.33
+- Redis 7.2.4
 
 ### 数据库初始化
 
